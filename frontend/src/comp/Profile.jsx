@@ -59,7 +59,7 @@ const Profile = () => {
 
   let profileSubmitHandler = (e) => {
     e?.preventDefault();
-    // console.log(profileData);
+    console.log(profileData);
     // api implementation
   };
 

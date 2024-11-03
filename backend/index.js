@@ -1,24 +1,29 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import { dbconnection } from './database/mongoConnection.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+import { dbconnection } from "./database/mongoConnection.js";
+import userRouter from './router/userRouter.js'
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000; // Use your environment variable or default to 8000
 
 let corsoption = {
-  origin:process.env.FRONTEND_URI,
-  credentials:true
-}
+  origin: process.env.FRONTEND_URI,
+  credentials: true,
+};
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true, limit:"10mb" }));
 app.use(cookieParser());
 app.use(cors(corsoption));
 
+// router 
+app.use("/api/v1/user", userRouter)
+
+
 app.listen(PORT, () => {
-  dbconnection()
+  dbconnection();
   console.log(`Server is started  on port ${PORT}`);
 });
