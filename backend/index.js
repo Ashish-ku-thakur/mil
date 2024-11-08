@@ -3,7 +3,9 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { dbconnection } from "./database/mongoConnection.js";
-import userRouter from './router/userRouter.js'
+import userRouter from "./router/userRouter.js";
+import restaurentRouter from "./router/restaurentRouter.js";
+import menuRouter from "./router/menuRouter.js";
 
 dotenv.config();
 const app = express();
@@ -15,13 +17,14 @@ let corsoption = {
 };
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit:"10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 app.use(cors(corsoption));
 
-// router 
-app.use("/api/v1/user", userRouter)
-
+// router
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/restaurent", restaurentRouter);
+app.use("/api/v1/menu", menuRouter);
 
 app.listen(PORT, () => {
   dbconnection();
