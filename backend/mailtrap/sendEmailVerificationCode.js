@@ -6,26 +6,27 @@ import {
 } from "./htmlContant.js";
 import { client, sender } from "./mailtrap.js";
 
-export let sendEmailVerificationCode = async (
-  email,
-  verificationTokenCreate
-) => {
-  const recipient = [{ email }]; // this is that guy that i want to send email
 
+
+export const sendEmailVerificationCode = async (email, verificationToken) => {
   try {
-    let res = await client.testing.send({
-      from: sender,
-      to: recipient,
-      subject: "Email verification",
-      text: verificationTokenCreate,
-      html: htmlContent.repeat("{verificationToken}", verificationTokenCreate),
-      category: "For Email verification",
+    const res = await client.testing
+      .send({
+      from: sender,  // Ensure sender is defined as the sender's email address
+      to: email,     // Pass email as a string, not as an array
+      subject: 'Verify your email',
+      // Uncomment and use the line below if you want to send HTML content
+      // html: htmlContent.replace("{verificationToken}", verificationToken),
+      text: verificationToken, // or 'text: verificationToken' if sending as plain text
+      category: 'Email Verification',
     });
+    return res; // Optional: returning the response if you want to handle it
   } catch (error) {
     console.log(error);
     throw new Error("Failed to send email verification");
   }
 };
+
 
 export let sendWelcomeEmail = async (user) => {
   let recipient = [{ email: user.email }];

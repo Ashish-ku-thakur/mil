@@ -10,7 +10,7 @@ let Login = () => {
         email: "",
         password: ""
     })
-    let [loader, setLoader] = useState(false)
+    let [loading, setLoader] = useState(false)
     let [errors, setErrors] = useState({})
 
     let setLoginhandler = (e) => {
@@ -60,7 +60,7 @@ let Login = () => {
                 </div>
 
                 {
-                    loader ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
+                    loading ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
                         <Loader2 className="h-4 w-4 animate-spin" />Please wait
                     </Button>) : (<Button type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
                         Login

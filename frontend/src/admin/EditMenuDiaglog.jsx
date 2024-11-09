@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 import { useEffect, useRef, useState } from "react";
 
 const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoader] = useState(false);
 
   const [editMenuData, setEditMenuData] = useState({
     Name: "",
@@ -125,9 +125,9 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
             ))}
           </div>
 
-          {/* loader btn */}
+          {/* loading btn */}
           <div className="w-full flex items-center justify-center">
-            {loader ? (
+            {loading ? (
               <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
                 <Loade2 className="h-4 w-4 animate-spin" />
                 Please wait

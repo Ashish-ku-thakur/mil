@@ -4,10 +4,12 @@ import { Search } from "lucide-react";
 import { useState } from "react";
 import burger from "@/assets/burger.jpg";
 import { useNavigate } from "react-router-dom";
+// import { useUserdata } from "@/store/useUserdata";
 
 const HeroSection = () => {
   let [serchText, setSerchText] = useState("");
   let navigate = useNavigate();
+  // let       {inc, increment} = useUserdata()
   return (
     <div className="flex items-center justify-center m-4 gap-20 flex-col md:flex-row max-w-7xl mx-auto md:p-10 rounded-lg ">
       <div className="flex flex-col gap-10 w-full md:w-[80%]">

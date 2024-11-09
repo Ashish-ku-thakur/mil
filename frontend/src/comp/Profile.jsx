@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 const Profile = () => {
   const inputRef = useRef(null);
   const [image, setImage] = useState(null); // Image store karne ke liye state
-  let [loader, setLoader] = useState(false);
+  let [loading, setLoader] = useState(false);
 
   let [profileData, setProfileData] = useState({
     fullname: "",
@@ -161,7 +161,7 @@ const Profile = () => {
 
         {/* button submit  */}
         <div className="flex items-center justify-center w-full my-3">
-          {loader ? (
+          {loading ? (
             <Button
               disabled
               type="submit"

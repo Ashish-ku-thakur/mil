@@ -56,7 +56,7 @@ const AdminAddMenus = () => {
   let [open, setOpen] = useState(false);
   let [open2, setOpen2] = useState(false);
   let [selectedMenu, setSelectedMenu] = useState(null);
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoader] = useState(false);
   const imageRef = useRef(); // Ref defined for file input
   const [errors, setErrors] = useState({});
 
@@ -187,7 +187,7 @@ const AdminAddMenus = () => {
               </div>
 
               <div className="w-full flex items-center justify-center">
-                {loader ? (
+                {loading ? (
                   <Button
                     disabled
                     className="bg-grn hover:bg-hovergrn w-full my-2"

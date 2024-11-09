@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 import React, { useRef, useState } from "react";
 
 const AdminRestaurent = () => {
-  const [loader, setLoader] = useState(false);
+  const [loading, setLoader] = useState(false);
   const imageRef = useRef(); // Ref defined for file input
   const [errors, setErrors] = useState({});
   const [addrestaurentData, setAddrestaurentData] = useState({
@@ -133,7 +133,7 @@ const AdminRestaurent = () => {
           </div>
 
           <div className="w-full flex items-center justify-center">
-            {loader ? (
+            {loading ? (
               <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Please wait

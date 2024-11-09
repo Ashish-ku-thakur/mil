@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 const ForgotPassword = () => {
     let [email, setEmail] = useState("")
-    let [loader, setLoader] = useState(false)
+    let [loading, setLoader] = useState(false)
     // console.log(email);
 
     return (
@@ -23,7 +23,7 @@ const ForgotPassword = () => {
                 </div>
 
                 {
-                    loader ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
+                    loading ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
                         <Loader2 className="h-4 w-4 animate-spin" />Please wait
                     </Button>) : (
 

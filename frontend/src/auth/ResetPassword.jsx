@@ -6,7 +6,7 @@ import { Link } from "react-router-dom"
 
 const ResetPassword = () => {
     let [newPassword, setNewPassword] = useState("")
-    let [loader, setLoader] = useState(false)
+    let [loading, setLoader] = useState(false)
     return (
         <div className="flex items-center justify-center min-h-screen w-full">
             <form className="flex flex-col gap-4 w-full max-w-md rounded-lg mx-4">
@@ -21,7 +21,7 @@ const ResetPassword = () => {
                 </div>
 
                 {
-                    loader ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
+                    loading ? (<Button disabled type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
                         <Loader2 className="h-4 w-4 animate-spin" />Please wait
                     </Button>) : (<Button type='submit' className='bg-grn hover:bg-hovergrn w-full my-2'>
                         Reset

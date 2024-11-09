@@ -30,11 +30,14 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
+
 // import bird from '@/'
 
 const Navbar = () => {
   let [admin, setAdmin] = useState(true);
-  let [loader, setLoader] = useState(false);
+  let [loading, setLoader] = useState(false);
+  
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex items-center justify-between h-14">
@@ -110,13 +113,13 @@ const Navbar = () => {
               </Avatar>
             </div>
 
-            {loader ? (
+            {loading ? (
               <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Please wait
               </Button>
             ) : (
-              <Button className="bg-grn hover:bg-hovergrn w-full my-2">
+              <Button  className="bg-grn hover:bg-hovergrn w-full my-2">
                 Logout
               </Button>
             )}

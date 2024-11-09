@@ -1,33 +1,30 @@
 import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
-import crypto from "crypto";
-import cloudinary from "../cloudinary/cloudinaryConfig.js";
-import { generateCookieToken } from "../utils/generateCookieToken.js";
+import dotenv from "dotenv";
 import { generateSixdigitToken } from "../utils/generateSixdigitToken.js";
-import {
-  sendEmailVerificationCode,
-  sendPasswordResetLink,
-  sendWelcomeEmail,
-} from "../mailtrap/sendEmailVerificationCode.js";
+import { sendEmail } from "../nodemailer/sendemails.js";
+
+dotenv.config();
 
 export let signup = async (req, res) => {
   try {
     let { fullname, email, password, contact } = req.body;
+    console.log(email);
 
-    let user = await User.findOne({ email }); // if find user already exist or not
-
+    let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
-        message: "user is already exist with this email try new email",
+        message:
+          "User already exists with this email. Please try a different email.",
         success: false,
       });
     }
 
-    // create an account
+    // Hash password for security
+    let hashPassword = await bcryptjs.hash(password, 10);
 
-    let hashPassword = await bcryptjs.hash(password, 10); // hash password for security
-
-    let verificationTokenCreate = generateSixdigitToken(); // 6 digit code
+    // Generate 6-digit verification token
+    let verificationTokenCreate = generateSixdigitToken();
 
     let createUser = await User.create({
       fullname,
@@ -38,12 +35,10 @@ export let signup = async (req, res) => {
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
     });
 
-    // cookie token
-    generateCookieToken(res, user); // for sign up
+   await sendEmail(email, verificationTokenCreate); // Replace with the recipient's email
+    
 
-    // email per 6 digit code bhejna hai
-    await sendEmailVerificationCode(email, verificationTokenCreate);
-
+    // Return user data without the password
     let userWithoutPassword = await User.findOne({ email }).select("-password");
 
     return res.status(201).json({
@@ -53,7 +48,7 @@ export let signup = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "internal server error" });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
