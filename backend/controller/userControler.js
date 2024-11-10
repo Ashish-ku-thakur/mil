@@ -2,7 +2,8 @@ import User from "../models/userModel.js";
 import bcryptjs from "bcryptjs";
 import dotenv from "dotenv";
 import { generateSixdigitToken } from "../utils/generateSixdigitToken.js";
-import { sendEmail } from "../nodemailer/sendemails.js";
+import { sendEmail, sendwelcomwemail } from "../nodemailer/sendemails.js";
+import { generateCookieToken } from "../utils/generateCookieToken.js";
 
 dotenv.config();
 
@@ -35,8 +36,9 @@ export let signup = async (req, res) => {
       verificationTokenExpiresAt: Date.now() + 24 * 60 * 60 * 1000,
     });
 
-   await sendEmail(email, verificationTokenCreate); // Replace with the recipient's email
-    
+    await generateCookieToken(res, createUser);
+
+    await sendEmail(email, verificationTokenCreate); // Replace with the recipient's email
 
     // Return user data without the password
     let userWithoutPassword = await User.findOne({ email }).select("-password");
@@ -70,13 +72,13 @@ export let login = async (req, res) => {
 
     if (!isMatchPassword) {
       return res.status(400).json({
-        message: "email and password is not correct",
+        message: "password and email is not correct",
         success: false,
       });
     }
 
     // cookie token
-    generateCookieToken(); // for login
+    await generateCookieToken(res, user); // for login
 
     // every thing is correct then set last login
 
@@ -85,7 +87,7 @@ export let login = async (req, res) => {
 
     let userWithoutPassword = await User.findOne({ email }).select("-password");
 
-    return res.status(201).json({
+    return res.status(200).json({
       message: `welcome back ${user.fullname}`,
       success: true,
       user: userWithoutPassword,
@@ -118,11 +120,9 @@ export let verifiedEmail = async (req, res) => {
     await user.save();
 
     //sendemail code for successfully email verify
-    await sendWelcomeEmail(user);
+    await sendwelcomwemail(user);
 
-    let userWithoutPassword = await User.findOne({
-      verificationToken: verificationCode,
-    }).select("-password");
+    let userWithoutPassword = await User.findById(user._id).select("-password");
 
     return res.status(200).json({
       message: "Email Verified Successfully",

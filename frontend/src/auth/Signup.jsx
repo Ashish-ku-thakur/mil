@@ -34,7 +34,7 @@ const Signup = () => {
     } else {
       setErrors("");
       await signup(signupFields);
-      //   navigate("/verifi-email")
+      navigate("/verifi-email");
     }
 
     // api start here
