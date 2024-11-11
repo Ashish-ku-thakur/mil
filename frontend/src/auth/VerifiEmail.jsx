@@ -5,19 +5,22 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useUserdata } from "@/store/useUserdata";
 import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const VerifiEmail = () => {
   const [value, setValue] = useState("");
+  let { verifyEmail, loading } = useUserdata();
 
   let navigate = useNavigate();
-  let submitHandler = (e) => {
+  let submitHandler = async (e) => {
     e.preventDefault();
     console.log(value);
 
     // after api imp
+    await verifyEmail(value);
     navigate("/");
   };
 

@@ -21,6 +21,6 @@ router.route("/logout").post(logout);
 router.route("/forgotPassword").post(forgotPassword);
 router.route("/setNewPassword/:newPasswordLink").post(setNewPassword);
 router.route("/checkAuth").post(isAuth,checkAuth);
-router.route("/updateProfile").post(isAuth, upload.single('profilePhoto'), updateProfile);
+router.route("/updateProfile").patch(isAuth, upload.single('profilePhoto'), updateProfile);
 
 export default router;

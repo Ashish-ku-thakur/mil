@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Menubar,
   MenubarContent,
@@ -29,14 +29,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import { useUserdata } from "@/store/useUserdata";
 
 // import bird from '@/'
 
 const Navbar = () => {
   let [admin, setAdmin] = useState(true);
-  let [loading, setLoader] = useState(false);
-  
+  let { logout, loading, user } = useUserdata();
+  let navigate = useNavigate();
+
+  let move = () => {
+    navigate("/signup");
+  };
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -52,7 +56,8 @@ const Navbar = () => {
             <Link to={"/order"}>Order</Link>
 
             {/* admin */}
-            {admin && (
+
+            {user?.admin && (
               <div>
                 <Menubar>
                   <MenubarMenu>
@@ -119,7 +124,13 @@ const Navbar = () => {
                 Please wait
               </Button>
             ) : (
-              <Button  className="bg-grn hover:bg-hovergrn w-full my-2">
+              <Button
+                onClick={() => {
+                  logout(); // Call the logout function
+                  move(); // Call the move function
+                }}
+                className="bg-grn hover:bg-hovergrn w-full my-2"
+              >
                 Logout
               </Button>
             )}
@@ -138,6 +149,12 @@ const Navbar = () => {
 export default Navbar;
 
 let MobileNavbar = () => {
+  let { logout, loading, user } = useUserdata();
+  let navigate = useNavigate();
+
+  let move = () => {
+    navigate("/signup");
+  };
   return (
     <Sheet>
       <SheetTrigger>
@@ -177,35 +194,57 @@ let MobileNavbar = () => {
 
         {/* sheet */}
         <SheetDescription className="h-[80vh]">
-          <Link to={"/profile"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
+          <Link
+            to={"/profile"}
+            className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+          >
             <User />
             <p>Profile</p>
           </Link>
 
-          <Link to={"/order"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
+          <Link
+            to={"/order"}
+            className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+          >
             <HandPlatter />
             <p>Order</p>
           </Link>
 
-          <Link to={"/cart"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
+          <Link
+            to={"/cart"}
+            className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+          >
             <ShoppingCart />
             <p>Cart(0)</p>
           </Link>
 
-          <Link to={"/admin/addmenus"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
-            <Menu />
-            <p>Menu</p>
-          </Link>
+          {user?.admin && (
+            <div>
+              <Link
+                to={"/admin/addmenus"}
+                className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+              >
+                <Menu />
+                <p>Menu</p>
+              </Link>
 
-          <Link to={"/admin/restaurent"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
-            <UtensilsCrossed />
-            <p>Restaurent</p>
-          </Link>
+              <Link
+                to={"/admin/restaurent"}
+                className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+              >
+                <UtensilsCrossed />
+                <p>Restaurent</p>
+              </Link>
 
-          <Link to={"/admin/orders"} className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2">
-            <PackageCheck />
-            <p>RestaurentOrders</p>
-          </Link>
+              <Link
+                to={"/admin/orders"}
+                className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
+              >
+                <PackageCheck />
+                <p>RestaurentOrders</p>
+              </Link>
+            </div>
+          )}
         </SheetDescription>
 
         <SheetFooter>
@@ -218,7 +257,23 @@ let MobileNavbar = () => {
               <p className="text-sm uppercase font-serif">Ashish kumar </p>
             </div>
 
-            <Button className="bg-grn hover:bg-hovergrn">Logout</Button>
+            {loading ? (
+              <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                Please wait
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  logout(); // Call the logout function
+                  move(); // Call the move function
+                }}
+                className="bg-grn hover:bg-hovergrn w-full my-2"
+              >
+                Logout
+              </Button>
+            )}
+            {/* <Button className="bg-grn hover:bg-hovergrn">Logout</Button> */}
           </div>
         </SheetFooter>
       </SheetContent>

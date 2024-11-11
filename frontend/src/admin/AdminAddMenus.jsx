@@ -23,32 +23,33 @@ import {
 } from "@/components/ui/card";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import EditMenuDiaglog from "./EditMenuDiaglog";
+import { useMenudata } from "@/store/useMenudata";
 
 let details = [
   {
     id: 1,
-    RestaurentMenuPhoto:
+    menuPhoto:
       "https://plus.unsplash.com/premium_photo-1674597598636-218d83e378bd?q=80&w=1670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    Name: "Birany",
-    Description:
+    name: "Birany",
+    description:
       "lorem20-_photo-1674597598636-218d83e378bd?q=80&w=1670&auto=format&fit=crop",
-    PriceInRupess: 20,
+    price: 20,
   },
   {
     id: 2,
-    RestaurentMenuPhoto:
+    menuPhoto:
       "https://plus.unsplash.com/premium_photo-1674597598636-218d83e378bd?q=80&w=1670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    Name: "Jalebi",
-    Description: "lorem30",
-    PriceInRupess: 30,
+    name: "Jalebi",
+    description: "lorem30",
+    price: 30,
   },
   {
     id: 3,
-    RestaurentMenuPhoto:
+    menuPhoto:
       "https://plus.unsplash.com/premium_photo-1674597598636-218d83e378bd?q=80&w=1670&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    Name: "Momos",
-    Description: "lorem40",
-    PriceInRupess: 40,
+    name: "Momos",
+    description: "lorem40",
+    price: 40,
   },
 ];
 
@@ -56,23 +57,24 @@ const AdminAddMenus = () => {
   let [open, setOpen] = useState(false);
   let [open2, setOpen2] = useState(false);
   let [selectedMenu, setSelectedMenu] = useState(null);
-  const [loading, setLoader] = useState(false);
   const imageRef = useRef(); // Ref defined for file input
   const [errors, setErrors] = useState({});
 
-  const [addrestaurentData, setAddrestaurentData] = useState({
-    Name: "",
-    Description: "",
-    PriceInRupess: "",
-    RestaurentMenuPhoto: undefined,
+  const [addMenuData, setAddMenuData] = useState({
+    name: "",
+    description: "",
+    price: "",
+    menuPhoto: undefined,
   });
-  const mapData = Object.keys(addrestaurentData);
+  const mapData = Object.keys(addMenuData);
   const [image, setImage] = useState(null);
+
+  let { createMenu, menus, loading } = useMenudata();
 
   const ChangeEventHandler = (e) => {
     const { name, value, type } = e.target;
-    setAddrestaurentData({
-      ...addrestaurentData,
+    setAddMenuData({
+      ...addMenuData,
       [name]: type === "number" ? Number(value) : value,
     });
   };
@@ -92,9 +94,9 @@ const AdminAddMenus = () => {
       try {
         const base64Image = await imageToBase64(file);
         setImage(base64Image);
-        setAddrestaurentData((perData) => ({
+        setAddMenuData((perData) => ({
           ...perData,
-          RestaurentMenuPhoto: file,
+          menuPhoto: file,
         }));
       } catch (error) {
         console.error("Error converting image to base64", error);
@@ -102,18 +104,29 @@ const AdminAddMenus = () => {
     }
   };
 
-  const checkoutformHandler = (e) => {
+  const checkoutformHandler = async (e) => {
     e.preventDefault();
-    const result = addRestaurentMenuSchema.safeParse(addrestaurentData);
+    const result = addRestaurentMenuSchema.safeParse(addMenuData);
     if (!result.success) {
       const fieldErrors = result.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
       console.log(fieldErrors);
       return;
-    } else {
-      setErrors({});
-      console.log(addrestaurentData);
     }
+    setErrors({});
+    try {
+      let formdata = new FormData();
+
+      formdata.append("description", addMenuData.description);
+      formdata.append("name", addMenuData.name);
+      formdata.append("price", addMenuData.price.toString());
+      if (addMenuData?.menuPhoto)
+        formdata.append("menuPhoto", addMenuData.menuPhoto);
+      await createMenu(formdata);
+    } catch (error) {
+      console.log(error);
+    }
+    // console.log(addMenuData);
   };
 
   return (
@@ -134,7 +147,7 @@ const AdminAddMenus = () => {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add A New Menu</DialogTitle>
-              <DialogDescription>To Stand your Name</DialogDescription>
+              <DialogDescription>To Stand your name</DialogDescription>
             </DialogHeader>
 
             <form onSubmit={checkoutformHandler}>
@@ -149,32 +162,32 @@ const AdminAddMenus = () => {
                     <Label>{field}</Label>
                     <Input
                       type={
-                        field === "PriceInRupess"
+                        field === "price"
                           ? "number"
-                          : field === "RestaurentMenuPhoto"
+                          : field === "menuPhoto"
                           ? "file"
                           : "text"
                       }
                       name={field}
                       value={
-                        field === "RestaurentMenuPhoto"
+                        field === "menuPhoto"
                           ? undefined // browser value input type file me value nahi leta iselia undefined
-                          : addrestaurentData[field]
+                          : addMenuData[field]
                       }
                       placeholder={field}
                       className={`focus-visible:ring-0 ${
-                        field === "RestaurentMenuPhoto" ? "hidden" : ""
+                        field === "menuPhoto" ? "hidden" : ""
                       }`}
-                      ref={field === "RestaurentMenuPhoto" ? imageRef : null} // Ref added only for RestaurentPhoto
+                      ref={field === "menuPhoto" ? imageRef : null} // Ref added only for RestaurentPhoto
                       onChange={(e) => {
-                        if (field === "RestaurentMenuPhoto") {
+                        if (field === "menuPhoto") {
                           uploadImageHandler(e);
                         } else {
                           ChangeEventHandler(e);
                         }
                       }}
                     />
-                    {field === "RestaurentMenuPhoto" && (
+                    {field === "menuPhoto" && (
                       <div
                         onClick={() => imageRef.current.click()}
                         className="cursor-pointer bg-grn hover:bg-hovergrn mt-4 w-fit p-2 rounded-md text-gray-700"
@@ -197,6 +210,7 @@ const AdminAddMenus = () => {
                   </Button>
                 ) : (
                   <Button
+                    // onClick={2}
                     className="bg-grn hover:bg-hovergrn mt-4 w-full md:w-fit"
                     type="submit"
                   >
@@ -219,7 +233,7 @@ const AdminAddMenus = () => {
                 <CardHeader>
                   <AspectRatio ratio={18 / 8}>
                     <img
-                      src={ele?.RestaurentMenuPhoto}
+                      src={ele?.menuPhoto}
                       className="w-full h-full object-center rounded-xl "
                       alt=""
                     />
@@ -228,15 +242,15 @@ const AdminAddMenus = () => {
 
                 {/* location & que */}
                 <CardContent>
-                  <div className="font-bold">{ele?.Name}</div>
+                  <div className="font-bold">{ele?.name}</div>
 
                   <CardDescription>
-                    {ele?.Description.substring(0, 25)}...etc
+                    {ele?.description.substring(0, 25)}...etc
                   </CardDescription>
                 </CardContent>
 
                 <CardContent>
-                  <h2>Prize:₹ {ele?.PriceInRupess}</h2>
+                  <h2>Prize:₹ {ele?.price}</h2>
                 </CardContent>
                 {/* btn */}
                 <CardFooter className="flex">

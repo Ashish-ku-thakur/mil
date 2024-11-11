@@ -5,7 +5,7 @@ import upload from "../utils/multer.js";
 
 let router = express.Router();
 
-router.route("/addMenu").post(isAuth, upload.single("menuImage"), addMenu);
+router.route("/addMenu").post(isAuth, upload.single("menuPhoto"), addMenu);
 router
   .route("/editMenu/:id")
   .patch(isAuth, upload.single("menuImage"), editMenu);

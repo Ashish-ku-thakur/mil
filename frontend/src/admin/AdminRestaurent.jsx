@@ -2,23 +2,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { restaurentSchema } from "@/schema/restaurentSchema";
+import { useRestaurentdata } from "@/store/useRestaurentdata";
 import { Loader2 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const AdminRestaurent = () => {
-  const [loading, setLoader] = useState(false);
   const imageRef = useRef(); // Ref defined for file input
   const [errors, setErrors] = useState({});
   const [addrestaurentData, setAddrestaurentData] = useState({
-    Restaurent: "",
-    Address: "",
-    Country: "",
-    DeleveryTime: "",
-    Cuisiens: [],
-    RestaurentPhoto: undefined,
+    restaurentName: "",
+    city: "",
+    country: "",
+    deleveryTime: "",
+    cuisiens: [],
+    restaurentPhoto: undefined,
   });
   const mapData = Object.keys(addrestaurentData);
   const [image, setImage] = useState(null);
+  let {
+    loading,
+    createRestaurent,
+    updateRestaurent,
+    myRestaurent,
+    getRestaurent,
+  } = useRestaurentdata();
 
   const ChangeEventHandler = (e) => {
     const { name, value, type } = e.target;
@@ -45,7 +52,7 @@ const AdminRestaurent = () => {
         setImage(base64Image);
         setAddrestaurentData((perData) => ({
           ...perData,
-          RestaurentPhoto: file,
+          restaurentPhoto: file,
         }));
       } catch (error) {
         console.error("Error converting image to base64", error);
@@ -53,7 +60,7 @@ const AdminRestaurent = () => {
     }
   };
 
-  const checkoutformHandler = (e) => {
+  const checkoutformHandler = async (e) => {
     e.preventDefault();
     const result = restaurentSchema.safeParse(addrestaurentData);
     if (!result.success) {
@@ -61,24 +68,73 @@ const AdminRestaurent = () => {
       setErrors(fieldErrors);
       console.log(fieldErrors);
       return;
-    } else {
-      setErrors({});
-      console.log(addrestaurentData);
+    }
+    setErrors({});
+
+    // create res or update res
+    try {
+      let formdata = new FormData();
+
+      if (addrestaurentData?.restaurentName)
+        formdata.append("restaurentName", addrestaurentData?.restaurentName);
+
+      if (addrestaurentData?.city)
+        formdata.append("city", addrestaurentData?.city);
+
+      if (addrestaurentData?.country)
+        formdata.append("country", addrestaurentData?.country);
+
+      if (addrestaurentData?.deleveryTime)
+        formdata.append(
+          "deleveryTime",
+          addrestaurentData?.deleveryTime.toString()
+        );
+
+      if (addrestaurentData?.cuisiens)
+        formdata.append("cuisiens", JSON.stringify(addrestaurentData.cuisiens));
+
+      if (addrestaurentData?.restaurentPhoto)
+        formdata.append("restaurentPhoto", addrestaurentData.restaurentPhoto);
+
+      if (myRestaurent) {
+        await updateRestaurent(formdata);
+      } else {
+        await createRestaurent(formdata);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
   const change = (e) => {
     setAddrestaurentData({
       ...addrestaurentData,
-      Cuisiens: e.target.value.split(","),
+      cuisiens: e.target.value.split(","),
     });
   };
+
+  useEffect(() => {
+    let fetchRestaurent = async () => {
+      await getRestaurent();
+      setAddrestaurentData({
+        restaurentName: myRestaurent?.restaurentName || "",
+        city: myRestaurent?.city || "",
+        country: myRestaurent?.country || "",
+        deleveryTime: myRestaurent?.deleveryTime || 0,
+        cuisiens: myRestaurent?.cuisiens || [],
+        restaurentPhoto: myRestaurent?.restaurentPhoto || undefined,
+      });
+    };
+    fetchRestaurent();
+    console.log(myRestaurent);
+    
+  }, []);
 
   return (
     <div className="max-w-6xl mx-auto my-10">
       <div>
         <h1 className="font-bold md:font-extrabold text-2xl mb-4">
-          Add Restaurent
+          Add restaurentName
         </h1>
 
         <form onSubmit={checkoutformHandler}>
@@ -93,34 +149,34 @@ const AdminRestaurent = () => {
                 <Label>{field}</Label>
                 <Input
                   type={
-                    field === "DeleveryTime"
+                    field === "deleveryTime"
                       ? "number"
-                      : field === "RestaurentPhoto"
+                      : field === "restaurentPhoto"
                       ? "file"
                       : "text"
                   }
                   name={field}
                   value={
-                    field === "RestaurentPhoto"
+                    field === "restaurentPhoto"
                       ? undefined // browser value input type file me value nahi leta iselia undefined
                       : addrestaurentData[field]
                   }
-                  placeholder={field}
+                  // placeholder={field}
                   className={`focus-visible:ring-0 ${
-                    field === "RestaurentPhoto" ? "hidden" : ""
+                    field === "restaurentPhoto" ? "hidden" : ""
                   }`}
-                  ref={field === "RestaurentPhoto" ? imageRef : null} // Ref added only for RestaurentPhoto
+                  ref={field === "restaurentPhoto" ? imageRef : null} // Ref added only for restaurentPhoto
                   onChange={(e) => {
-                    if (field === "Cuisiens") {
+                    if (field === "cuisiens") {
                       change(e);
-                    } else if (field === "RestaurentPhoto") {
+                    } else if (field === "restaurentPhoto") {
                       uploadImageHandler(e);
                     } else {
                       ChangeEventHandler(e);
                     }
                   }}
                 />
-                {field === "RestaurentPhoto" && (
+                {field === "restaurentPhoto" && (
                   <div
                     onClick={() => imageRef.current.click()}
                     className="cursor-pointer bg-grn hover:bg-hovergrn mt-4 w-fit p-2 rounded-md text-gray-700"
@@ -143,14 +199,12 @@ const AdminRestaurent = () => {
                 className="bg-grn hover:bg-hovergrn mt-4 w-full md:w-fit"
                 type="submit"
               >
-                Add Restaurent
+                {myRestaurent ? "Update restaurentName" : "Add restaurentName"}
               </Button>
             )}
           </div>
         </form>
       </div>
-
-     
     </div>
   );
 };
