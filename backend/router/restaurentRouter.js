@@ -23,7 +23,7 @@ router
   
 router.route("/getRestaurentOrder").get(isAuth, getRestaurentOrder);
 router.route("/updateOrderstatus/:id").patch(isAuth,updateOrderstatus);
-router.route("/searchRestaurent/:searchText").post(searchRestaurent);
+router.route("/searchRestaurent?:searchText").get(searchRestaurent);
 router.route("/singleRestaurent/:id").post(singleRestaurent);
 
 export default router

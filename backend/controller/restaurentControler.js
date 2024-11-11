@@ -43,8 +43,8 @@ export let createRestaurent = async (req, res) => {
       restaurentName,
       city,
       country,
-      deleveryTime: Number(deleveryTime),
-      cuisiens: JSON.parse(cuisiens),
+      deleveryTime,
+      cuisiens,
       restaurentPhoto: cloudResponse?.secure_url,
     });
 
@@ -63,10 +63,7 @@ export let getRestaurent = async (req, res) => {
   try {
     let userId = req.id;
 
-    let restaurent = await Restaurent.findOne({ user: userId }).populate(
-      "menus"
-    );
-    // console.log(restaurent);
+    let restaurent = await Restaurent.find({ user: userId });
 
     if (!restaurent) {
       return res.status(400).json({
@@ -88,27 +85,22 @@ export let getRestaurent = async (req, res) => {
 export let updateRestaurent = async (req, res) => {
   try {
     let userId = req.id;
-    let { restaurentName, city, country, deleveryTime, cuisiens } = req.body;
+    let { restaurentName, city, country } = req.body;
     let file = req.file;
 
-    // `findOne` ka use karte hain taaki ek single document mile
-    let restaurent = await Restaurent.findOne({ user: userId });
+    let restaurent = await Restaurent.find({ user: userId });
 
     if (!restaurent) {
       return res.status(400).json({
-        message: "You don't have any restaurant",
+        message: "you donn't have any restaurent",
         success: false,
       });
     }
-
-    let imageUri;
-    if (file) {
-      imageUri = await uploadeImageOnCloudinary(file);
-    }
-
+    // restaurentName, city, country, deleveryTime, cuisiens
     let cloudResponse;
-    if (imageUri) {
-      cloudResponse = await cloudinary.uploader.upload(imageUri, {
+    if (file) {
+      let imageUri = await uploadeImageOnCloudinary(file);
+      cloudResponse = cloudinary.uploader.upload(imageUri, {
         folder: "restaurant_photo",
         transformation: [{ width: 900, height: 700, crop: "limit" }],
       });
@@ -118,18 +110,17 @@ export let updateRestaurent = async (req, res) => {
     if (restaurentName) restaurent.restaurentName = restaurentName;
     if (city) restaurent.city = city;
     if (country) restaurent.country = country;
-    if (deleveryTime) restaurent.deleveryTime = JSON.parse(deleveryTime);
+    if (deleveryTime) restaurent.deleveryTime = deleveryTime;
     if (cuisiens) restaurent.cuisiens = JSON.parse(cuisiens);
-
     await restaurent.save();
 
     return res.status(200).json({
-      message: "Update Restaurant Successfully",
+      message: "Update Restaurent Successfully",
       success: true,
       restaurent,
     });
   } catch (error) {
-    console.error("Error updating restaurant:", error);
+    console.error("Error creating restaurant:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

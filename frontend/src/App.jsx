@@ -1,7 +1,4 @@
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
 import Login from "./auth/Login";
 import MainPage from "./MainPage";
@@ -18,84 +15,75 @@ import AdminRestaurent from "./admin/AdminRestaurent";
 import AdminAddMenus from "./admin/AdminAddMenus";
 import AdminOrder from "./admin/AdminOrder";
 import Order from "./comp/Order";
-import { useUserdata } from "./store/useUserdata";
-import { useEffect } from "react";
-import Load from "./comp/Load";
 
-let appRouter = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainPage />,
-    children: [
-      {
-        path: "/",
-        element: <HeroSection />,
-      },
-      {
-        path: "/profile",
-        element: <Profile />,
-      },
-      {
-        path: "/search-page/:text",
-        element: <SearchPage />,
-      },
-      {
-        path: "/restaurent/:id",
-        element: <Restaurent />,
-      },
-      {
-        path: "/cart",
-        element: <Cart />,
-      },
-      {
-        path: "/order",
-        element: <Order />,
-      },
-      // admin services started from here
-      {
-        path: "/admin/restaurent",
-        element: <AdminRestaurent />,
-      },
-      {
-        path: "/admin/addmenus",
-        element: <AdminAddMenus />,
-      },
-      {
-        path: "/admin/orders",
-        element: <AdminOrder />,
-      },
-    ],
-  },
-
-  {
-    path: "/signup",
-    element: <Signup />,
-  },
-  {
-    path: "/verifi-email",
-    element: <VerifiEmail />,
-  },
-  {
-    path: "/login",
-    element: <Login />,
-  },
-  {
-    path: "/forgot-password",
-    element: <ForgotPassword />,
-  },
-  {
-    path: "/reset-password",
-    element: <ResetPassword />,
-  },
-]);
 function App() {
-  let { checkAuth, isCheckingAuth, user } = useUserdata();
+  let appRouter = createBrowserRouter([
+    {
+      path: "/",
+      element: <MainPage />,
+      children: [
+        {
+          path: "/",
+          element: <HeroSection />,
+        },
+        {
+          path: "/profile",
+          element: <Profile />,
+        },
+        {
+          path: "/search-page/:text",
+          element: <SearchPage />,
+        },
+        {
+          path: "/restaurent/:id",
+          element: <Restaurent />,
+        },
+        {
+          path: "/cart",
+          element: <Cart />,
+        },
+        {
+          path: "/order",
+          element: <Order />,
+        },
+        // admin services started from here
+        {
+          path: "/admin/restaurent",
+          element: <AdminRestaurent />,
+        },
+        {
+          path: "/admin/addmenus",
+          element: <AdminAddMenus />,
+        },
+        {
+          path: "/admin/orders",
+          element: <AdminOrder />,
+        },
+        
+      ],
+    },
 
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
-
-  if (isCheckingAuth) return <Load />;
+    {
+      path: "/signup",
+      element: <Signup />,
+    },
+    {
+      path: "/verifi-email",
+      element: <VerifiEmail />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/forgot-password",
+      element: <ForgotPassword />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
+    },
+  ]);
 
   return (
     <div>

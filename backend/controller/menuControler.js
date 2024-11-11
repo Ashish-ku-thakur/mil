@@ -3,81 +3,51 @@ import Menu from "../models/meneModel.js";
 import Restaurent from "../models/restaurentModel.js";
 import { uploadeImageOnCloudinary } from "../utils/imageupload.js";
 
-export const addMenu = async (req, res) => {
+export let addMenu = async (req, res) => {
   try {
-    // Extract fields from the request
-    const { name, description, price } = req.body;
-    const file = req.file;
+    let { name, description, price } = req.body;
+    let file = req.file;
+    let userId = req.id;
 
-    // Check if file exists, if not, return an error
-    if (!file) {
-      return res.status(400).json({
-        success: false,
-        message: "Image is required",
-      });
-    }
-
-    // Upload image to Cloudinary and handle potential errors
-    const imageUrl = await uploadeImageOnCloudinary(file);
-    if (!imageUrl) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to upload image",
-      });
-    }
-
-    // Further upload image to Cloudinary with transformations
     let cloudResponse;
-    try {
-      cloudResponse = await cloudinary.uploader.upload(imageUrl, {
-        folder: "menu-image",
-        transformation: [{ width: 900, height: 700, crop: "limit" }],
-      });
-    } catch (cloudinaryError) {
-      console.error("Cloudinary upload failed:", cloudinaryError);
-      return res.status(500).json({
-        success: false,
-        message: "Image upload failed on Cloudinary",
+    if (file) {
+      let imageuri = await uploadeImageOnCloudinary(file);
+      cloudResponse = cloudinary.uploader.upload(imageuri, {
+        folder: "menu_image",
+        transformation: [{ width: 400, height: 400, crop: "limit" }],
       });
     }
 
-    // Create menu item in the database
-    const menu = await Menu.create({
+    let menu = await Menu.create({
+      menuPhoto: cloudResponse.secure_url,
       name,
       description,
-      price,
-      menuPhoto: cloudResponse.secure_url,
+      price: Number(price),
     });
 
     if (!menu) {
       return res.status(400).json({
         success: false,
-        message: "Menu is not created",
+        message: "menu is not Created Successfully",
       });
     }
 
-    // Find restaurant and link the menu
-    const restaurant = await Restaurent.findOne({ user: req.id });
-    if (restaurant) {
-      restaurant.menus.push(menu._id);
-      await restaurant.save();
+    let restaurent = await Restaurent.findById(userId);
+    if (restaurent) {
+      restaurent.menus.push(menu._id);
+      await restaurent.save();
     }
 
-    // Send success response
     return res.status(201).json({
       success: true,
-      message: "Menu added successfully",
+      message: "menu Created Successfully",
       menu,
     });
   } catch (error) {
-    console.error("Error adding menu:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    console.log(error);
+    return res.status(500).json({ message: "internal server error" });
   }
 };
-
 
 export let editMenu = async (req, res) => {
   try {
@@ -106,7 +76,7 @@ export let editMenu = async (req, res) => {
     menu.menuPhoto = cloudResponse.secure_url;
     if (name) menu.name = name;
     if (description) menu.description = description;
-    if (price) menu.price = Number(price);
+    if (price) menu.price = price;
     await menu.save();
 
     return res.status(200).json({
