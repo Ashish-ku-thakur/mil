@@ -8,27 +8,26 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useMenudata } from "@/store/useMenudata";
+import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
-  const [loading, setLoader] = useState(false);
+  console.log(selectedMenu);
 
   const [editMenuData, setEditMenuData] = useState({
-    Name: "",
-    Description: "",
-    PriceInRupess: "",
-    RestaurentMenuPhoto: undefined,
+    name: "",
+    description: "",
+    price: "",
+    menuPhoto: undefined,
   });
 
   const imageRef = useRef(); // Ref defined for file input
   const mapData = Object.keys(editMenuData);
   const [image, setImage] = useState(null);
 
-  const checkoutformHandler = (e) => {
-    e.preventDefault();
-    // api start here
-    // console.log(editMenuData);
-  };
+  let { editMenu, loading } = useMenudata();
+
   const ChangeEventHandler = (e) => {
     const { name, value, type } = e.target;
     setEditMenuData({
@@ -54,7 +53,7 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
         setImage(base64Image);
         setEditMenuData((perData) => ({
           ...perData,
-          RestaurentMenuPhoto: file,
+          menuPhoto: file,
         }));
       } catch (error) {
         console.error("Error converting image to base64", error);
@@ -62,13 +61,31 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
     }
   };
 
+  const checkoutformHandler = async (e) => {
+    e.preventDefault();
+
+    try {
+      let formdata = new FormData();
+      formdata.append("name", editMenuData?.name);
+      formdata.append("description", editMenuData?.description);
+      formdata.append("price", editMenuData?.price);
+      formdata.append("menuPhoto", editMenuData?.menuPhoto);
+
+      await editMenu(formdata, selectedMenu?._id);
+    } catch (error) {
+      console.log(error);
+    }
+    // api start here
+    // console.log(editMenuData);
+  };
+
   // set the previous value
   useEffect(() => {
     setEditMenuData({
-      Name: selectedMenu?.Name,
-      Description: selectedMenu?.Description,
-      PriceInRupess: selectedMenu?.PriceInRupess,
-      RestaurentMenuPhoto: selectedMenu?.RestaurentMenuPhoto,
+      name: selectedMenu?.name,
+      description: selectedMenu?.description,
+      price: selectedMenu?.price,
+      menuPhoto: selectedMenu?.menuPhoto,
     });
   }, [selectedMenu]);
 
@@ -88,32 +105,32 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
                 <Label>{field}</Label>
                 <Input
                   type={
-                    field === "PriceInRupess"
+                    field === "price"
                       ? "number"
-                      : field === "RestaurentMenuPhoto"
+                      : field === "menuPhoto"
                       ? "file"
                       : "text"
                   }
                   name={field}
                   value={
-                    field === "RestaurentMenuPhoto"
+                    field === "menuPhoto"
                       ? undefined // browser value input type file me value nahi leta iselia undefined
                       : editMenuData[field]
                   }
                   placeholder={field}
                   className={`focus-visible:ring-0 ${
-                    field === "RestaurentMenuPhoto" ? "hidden" : ""
+                    field === "menuPhoto" ? "hidden" : ""
                   }`}
-                  ref={field === "RestaurentMenuPhoto" ? imageRef : null} // Ref added only for RestaurentPhoto
+                  ref={field === "menuPhoto" ? imageRef : null} // Ref added only for RestaurentPhoto
                   onChange={(e) => {
-                    if (field === "RestaurentMenuPhoto") {
+                    if (field === "menuPhoto") {
                       uploadImageHandler(e);
                     } else {
                       ChangeEventHandler(e);
                     }
                   }}
                 />
-                {field === "RestaurentMenuPhoto" && (
+                {field === "menuPhoto" && (
                   <div
                     onClick={() => imageRef.current.click()}
                     className="cursor-pointer bg-grn hover:bg-hovergrn mt-4 w-fit p-2 rounded-md text-gray-700"
@@ -129,7 +146,7 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
           <div className="w-full flex items-center justify-center">
             {loading ? (
               <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
-                <Loade2 className="h-4 w-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Please wait
               </Button>
             ) : (

@@ -12,6 +12,8 @@ export let useRestaurentdata = create(
       loading: false,
       myRestaurent: null,
       searchRestaurentResult: null,
+      appliedSearchFilter: [],
+      selectedRestaurent: null,
       createRestaurent: async (formdata) => {
         try {
           let response = await axios.post(
@@ -42,20 +44,39 @@ export let useRestaurentdata = create(
           );
 
           if (response?.data?.success) {
-            set({ loading: false, myRestaurent: response?.data?.restaurent });
+            set({
+              loading: false,
+              selectedRestaurent: response?.data?.restaurent,
+            });
             toast?.success(response?.data?.message);
           }
         } catch (error) {
           set({ loading: false });
 
           if (error?.response?.status === 400) {
-            set({ myRestaurent: null });
+            set({ selectedRestaurent: null });
           }
           toast?.error(error?.response?.data?.message);
           console.log(error);
         }
       },
 
+      getRestaurentById: async (resId) => {
+        try {
+          let response = await axios.get(
+            `${API_RESTAURENT_ENDPOINT}/singleRestaurent/${resId}`
+          );
+          if (response?.data?.success) {
+            console.log(response?.data);
+
+            set({ selectedRestaurent: response?.data?.restaurent });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+
+      //todo
       updateRestaurent: async (formdata) => {
         try {
           set({ loading: true });
@@ -74,29 +95,89 @@ export let useRestaurentdata = create(
           toast?.error(error?.response?.data?.message);
         }
       },
-
       searchRestaurent: async (searchText, searchQuery, selectCuisiens) => {
         try {
           set({ loading: true });
+
+          // Wait for 700ms before making the API call
           let params = new URLSearchParams();
           params.set("searchQuery", searchQuery);
-          params.set("selectCuisiens", selectCuisiens);
+          params.set("selectCuisiens", selectCuisiens.join(",")); // Join array to comma-separated string
 
-          // Construct the URL properly using `params.toString()`
+          // await new Promise((resolve) => setTimeout(resolve, 2000)); // todo :understanding
+
           let response = await axios.post(
             `${API_RESTAURENT_ENDPOINT}/searchRestaurent/${searchText}?${params.toString()}`
           );
 
           if (response?.data?.success) {
-            set({ loading: false, searchRestaurentResult: response?.data?.restaurent });
-            console.log(response?.data);
+            set({
+              loading: false,
+              searchRestaurentResult: response?.data?.restaurent,
+            });
             toast.success(response?.data?.message);
-            
           }
         } catch (error) {
           set({ loading: false });
           toast.error(error?.response?.data?.message || "An error occurred");
         }
+      },
+
+      cleanappliedFilter: () => {
+        set(() => ({
+          appliedSearchFilter: [],
+        }));
+      },
+
+      selectedQuisiensDataGet: (text) => {
+        set((state) => {
+          let updatedFilter = state.appliedSearchFilter || [];
+
+          // Check if `text` is already in `appliedSearchFilter`
+          if (updatedFilter.includes(text)) {
+            // Remove `text` if it already exists
+            updatedFilter = updatedFilter.filter((allText) => allText !== text);
+          } else {
+            // Add `text` if it doesn't exist
+            updatedFilter = [...updatedFilter, text];
+          }
+
+          // Return the new state with updated `appliedSearchFilter`
+          return { appliedSearchFilter: updatedFilter };
+        });
+      },
+
+      addMenuToRestaurent: (menu) => {
+        set((state) => ({
+          myRestaurent: {
+            ...state?.myRestaurent,
+            menus: [...state?.myRestaurent?.menus, menu],
+          },
+        }));
+      },
+
+      EditMenuData: (menu) => {
+        set((state) => {
+          const indexfind = state.myRestaurent?.menus?.findIndex(
+            (menues) => menues._id === menu?._id
+          );
+
+          if (indexfind === -1) {
+            // Menu item not found, return the state unchanged
+            return state;
+          }
+
+          // Create before and after parts of the menu array
+          const beforeMenu = state.myRestaurent?.menus.slice(0, indexfind);
+          const afterMenu = state.myRestaurent?.menus.slice(indexfind + 1);
+
+          return {
+            myRestaurent: {
+              ...state.myRestaurent,
+              menus: [...beforeMenu, menu, ...afterMenu], // Update the menus array with the new menu
+            },
+          };
+        });
       },
     }),
     {

@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useRestaurentdata } from "./useRestaurentdata";
 
 let API_MENU_ENDPOINT = "http://localhost:8000/api/v1/menu";
 axios.defaults.withCredentials = true;
@@ -28,12 +29,17 @@ export let useMenudata = create(
           if (response?.data?.success) {
             set({ loading: false, menus: response?.data?.menu });
             toast?.success(response?.data?.message);
+
+            useRestaurentdata
+              ?.getState()
+              ?.addMenuToRestaurent(response?.data?.menu);
           }
         } catch (error) {
           set({ loading: false });
           console.log(error);
         }
       },
+
       editMenu: async (formdata, menuId) => {
         try {
           set({ loading: true });
@@ -45,6 +51,8 @@ export let useMenudata = create(
           if (response?.data?.success) {
             set({ loading: false, menu: response?.data?.menu });
             console.log(response?.data);
+
+            useRestaurentdata?.getState()?.EditMenuData(response?.data?.menu);
             toast?.success(response?.data?.message);
           }
         } catch (error) {

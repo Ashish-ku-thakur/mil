@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,11 +10,13 @@ import {
   Plus,
 } from "lucide-react"; // Plus icon ke liye lucide-react package ka use kar sakte hain
 import { Input } from "@/components/ui/input";
+import { useUserdata } from "@/store/useUserdata";
 
 const Profile = () => {
   const inputRef = useRef(null);
   const [image, setImage] = useState(null); // Image store karne ke liye state
   let [loading, setLoader] = useState(false);
+  let { updateProfile, user } = useUserdata();
 
   let [profileData, setProfileData] = useState({
     fullname: "",
@@ -57,11 +59,40 @@ const Profile = () => {
     }
   };
 
-  let profileSubmitHandler = (e) => {
+  let profileSubmitHandler = async (e) => {
     e?.preventDefault();
-    console.log(profileData);
+    console.log(profileData?.profilePhoto);
+
+    try {
+      let formdata = new FormData();
+
+      if (profileData?.fullname)
+        formdata.append("fullname", profileData?.fullname);
+      if (profileData?.profilePhoto)
+        formdata.append("profilePhoto", profileData?.profilePhoto);
+      if (profileData?.address)
+        formdata.append("address", profileData?.address);
+      if (profileData?.city) formdata.append("city", profileData?.city);
+      if (profileData?.country)
+        formdata.append("country", profileData?.country);
+
+      await updateProfile(formdata);
+    } catch (error) {
+      console.log(error);
+    }
     // api implementation
   };
+
+  useEffect(() => {
+    setProfileData({
+      fullname: user?.fullname || "",
+      profilePhoto: user?.profilePhoto || undefined,
+      email: user?.email || "",
+      address: user?.address || "",
+      city: user?.city || "",
+      country: user?.country || "",
+    });
+  }, [updateProfile]);
 
   return (
     <form onSubmit={profileSubmitHandler} className="max-w-7xl mx-auto my-5">
@@ -70,7 +101,10 @@ const Profile = () => {
           {/* set avatar img */}
           <div className="relative group">
             <Avatar className="md:w-28 md:h-28 w-24 h-24 relative">
-              <AvatarImage src={image || ""} alt="Profile Picture" />
+              <AvatarImage
+                src={image || user?.profilePhoto || ""}
+                alt="Profile Picture"
+              />
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
 
@@ -119,6 +153,7 @@ const Profile = () => {
               value={profileData.email}
               onChange={profileDataHandler}
               name="email"
+              disabled
             />
           </div>
 

@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import { generateSixdigitToken } from "../utils/generateSixdigitToken.js";
 import { sendEmail, sendwelcomwemail } from "../nodemailer/sendemails.js";
 import { generateCookieToken } from "../utils/generateCookieToken.js";
+import { uploadeImageOnCloudinary } from "../utils/imageupload.js";
+import cloudinary from "../cloudinary/cloudinaryConfig.js";
 
 dotenv.config();
 
@@ -247,25 +249,24 @@ export let checkAuth = async (req, res) => {
 export let updateProfile = async (req, res) => {
   try {
     let userId = req.id;
-    let { fullname, city, address, country } = req.body;
-    let profilePhoto = req.file;
+    let { fullname, city, address, country, profilePhoto } = req.body;
+    console.log("reqdata", req?.body);
 
     let user = await User.findById(userId).select("-password");
+
     let cloudResponse;
     if (profilePhoto) {
-      // profilePhoto ki uri nikalni hai
       cloudResponse = await cloudinary.uploader.upload(profilePhoto, {
         folder: "user_profiles", // You can specify a folder in Cloudinary
-        public_id: `profile_${userId}`, // Custom public ID
+        // public_id: `profile_${userId}`, // Custom public IDz
         transformation: [{ width: 300, height: 300, crop: "limit" }], // Optional transformation
       });
+      user.profilePhoto = cloudResponse?.secure_url;
     }
-    // console.log(cloudResponse.secure_url);
     if (fullname) user.fullname = fullname;
     if (city) user.city = city;
     if (address) user.address = address;
     if (country) user.country = country;
-    if (profilePhoto) user.profilePhoto = cloudResponse.secure_url;
     await user.save();
 
     return res.status(200).json({

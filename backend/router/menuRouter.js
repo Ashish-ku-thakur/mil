@@ -8,6 +8,6 @@ let router = express.Router();
 router.route("/addMenu").post(isAuth, upload.single("menuPhoto"), addMenu);
 router
   .route("/editMenu/:id")
-  .patch(isAuth, upload.single("menuImage"), editMenu);
+  .patch(isAuth, upload.single("menuPhoto"), editMenu);
 
 export default router;

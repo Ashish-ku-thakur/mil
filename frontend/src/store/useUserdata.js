@@ -65,7 +65,7 @@ export let useUserdata = create(
             console.log(response?.data);
           }
         } catch (error) {
-          set({ loading: false, isAuthenticated: false,  isCheckingAuth: true, });
+          set({ loading: false, isAuthenticated: false, isCheckingAuth: true });
           console.log(error);
         } finally {
           set({ loading: false });
@@ -116,7 +116,7 @@ export let useUserdata = create(
             console.log(response?.data);
           }
         } catch (error) {
-          set({ loading: false, isCheckingAuth: true, user:null });
+          set({ loading: false, isCheckingAuth: true, user: null });
           toast?.error(error?.response?.data?.success);
           console.log(error);
         } finally {
@@ -144,7 +144,7 @@ export let useUserdata = create(
           });
           toast?.error(error?.response?.data?.success);
           console.log(error);
-        } 
+        }
       },
 
       forgotPassword: async (email) => {
@@ -205,13 +205,13 @@ export let useUserdata = create(
         }
       },
 
-      updateProfile: async (profileData) => {
+      updateProfile: async (formdata) => {
         try {
           axios.defaults.withCredentials = true;
           set({ loading: true });
           let response = await axios.patch(
             `${API_USER_ENDPOINT}/updateProfile`,
-            profileData,
+            formdata,
             {
               headers: {
                 "Content-Type": "multipart/form-data",
@@ -220,6 +220,8 @@ export let useUserdata = create(
           );
 
           if (response?.data?.success) {
+            console.log(response?.data);
+
             set({
               loading: false,
               user: response?.data?.user,

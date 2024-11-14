@@ -1,15 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import burger from "@/assets/burger.jpg";
 import { useNavigate } from "react-router-dom";
-// import { useUserdata } from "@/store/useUserdata";
+import { useUserdata } from "@/store/useUserdata";
 
 const HeroSection = () => {
   let [serchText, setSerchText] = useState("");
   let navigate = useNavigate();
-  // let       {inc, increment} = useUserdata()
+
+  let { checkAuth } = useUserdata();
+
+  
+
+  let checkAuthFeature = async () => {
+    await checkAuth();
+  };
+  useEffect(() => {
+    checkAuthFeature();
+  }, []);
   return (
     <div className="flex items-center justify-center m-4 gap-20 flex-col md:flex-row max-w-7xl mx-auto md:p-10 rounded-lg ">
       <div className="flex flex-col gap-10 w-full md:w-[80%]">
@@ -36,7 +46,7 @@ const HeroSection = () => {
             </div>
 
             <Button
-              onClick={()=>navigate(`/search-page/${serchText}`)}
+              onClick={() => navigate(`/search-page/${serchText}`)}
               className="bg-grn hover:bg-hovergrn"
             >
               Search

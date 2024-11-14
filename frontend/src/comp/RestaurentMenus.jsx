@@ -11,7 +11,7 @@ import React from "react";
 import burger from "@/assets/burger.jpg";
 import { useNavigate } from "react-router-dom";
 
-const RestaurentMenus = () => {
+const RestaurentMenus = ({restaurentData}) => {
   let navigate = useNavigate();
   return (
     <div className="md:p-4">
@@ -19,13 +19,13 @@ const RestaurentMenus = () => {
         <h2 className="text-xl md:text-2xl font-bold my-6">Available Menus</h2>
 
         <div className="grid md:grid-cols-3 grid-cols-1 md:my-0 my-2">
-          {["Biryani", "Samose", "Momos"].map((ele) => (
-            <Card key={ele} className="relative ">
+          {restaurentData.map((ele) => (
+            <Card key={ele?._id} className="relative ">
               {/* restaurent name & time*/}
               <CardHeader>
                 <AspectRatio ratio={16 / 9}>
                   <img
-                    src={burger}
+                    src={ele?.menuPhoto}
                     className="w-full h-full object-center rounded-xl "
                     alt=""
                   />
@@ -34,20 +34,13 @@ const RestaurentMenus = () => {
 
               {/* location & que */}
               <CardContent>
-                {/* <CardHeader>
-                  <CardTitle>{ele}</CardTitle>
-                </CardHeader> */}
-                <div>{ele}</div>
-
                 <CardDescription>
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit. Lorem
-                  ipsum dolor sit amet consectetur adipisicing elit. Quaerat,
-                  odio.
+                 {ele?.description}
                 </CardDescription>
               </CardContent>
 
               <CardContent>
-                <h2>Prize:₹ 80</h2>
+                <h2>Prize:₹ {ele?.price}</h2>
               </CardContent>
               {/* btn */}
               <CardFooter className="flex">

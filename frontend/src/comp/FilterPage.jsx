@@ -1,16 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRestaurentdata } from "@/store/useRestaurentdata";
 
 const FilterPage = () => {
+  let { selectedQuisiensDataGet, appliedSearchFilter, cleanappliedFilter } =
+    useRestaurentdata();
+
+  let cleanappliedFilterFeature = () => {
+    cleanappliedFilter();
+  };
+  // console.log(appliedSearchFilter);
+
   let appliedFilterHandler = (text) => {
-    // alert(text);
-    console.log(text);
+    selectedQuisiensDataGet(text);
   };
   return (
     <div className="md:w-72">
       <div className="flex items-center justify-between">
         <h2>Filter by cuisines</h2>
-        <Button variant="link">Reset</Button>
+        <Button variant="link" onClick={cleanappliedFilterFeature}>
+          Reset
+        </Button>
       </div>
 
       {filterOption.map((filter) => (
@@ -18,6 +28,7 @@ const FilterPage = () => {
           <Checkbox
             id={filter?.id}
             onClick={() => appliedFilterHandler(filter?.label)}
+            checked={appliedSearchFilter.includes(filter.label)}
           />
           <label
             htmlFor="terms"
@@ -34,7 +45,7 @@ const FilterPage = () => {
 export default FilterPage;
 
 let filterOption = [
-  { id: "burger", label: "Burger" },
+  { id: "pizza", label: "Pizza" },
   { id: "thali", label: "Thali" },
   { id: "birany", label: "Birany" },
   { id: "momos", label: "Momos" },

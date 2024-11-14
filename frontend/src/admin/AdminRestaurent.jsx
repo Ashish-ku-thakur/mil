@@ -19,13 +19,8 @@ const AdminRestaurent = () => {
   });
   const mapData = Object.keys(addrestaurentData);
   const [image, setImage] = useState(null);
-  let {
-    loading,
-    createRestaurent,
-    updateRestaurent,
-    myRestaurent,
-    getRestaurent,
-  } = useRestaurentdata();
+
+  let { createRestaurent, loading, myRestaurent, getRestaurent } = useRestaurentdata();
 
   const ChangeEventHandler = (e) => {
     const { name, value, type } = e.target;
@@ -71,39 +66,54 @@ const AdminRestaurent = () => {
     }
     setErrors({});
 
-    // create res or update res
     try {
       let formdata = new FormData();
 
-      if (addrestaurentData?.restaurentName)
-        formdata.append("restaurentName", addrestaurentData?.restaurentName);
+      formdata.append("restaurentName", addrestaurentData?.restaurentName);
+      formdata.append("city", addrestaurentData?.city);
+      formdata.append("country", addrestaurentData?.country);
+      formdata.append("deleveryTime", addrestaurentData?.deleveryTime);
+      formdata.append("cuisiens", JSON.stringify(addrestaurentData?.cuisiens));
+      formdata.append("restaurentPhoto", addrestaurentData?.restaurentPhoto);
 
-      if (addrestaurentData?.city)
-        formdata.append("city", addrestaurentData?.city);
-
-      if (addrestaurentData?.country)
-        formdata.append("country", addrestaurentData?.country);
-
-      if (addrestaurentData?.deleveryTime)
-        formdata.append(
-          "deleveryTime",
-          addrestaurentData?.deleveryTime.toString()
-        );
-
-      if (addrestaurentData?.cuisiens)
-        formdata.append("cuisiens", JSON.stringify(addrestaurentData.cuisiens));
-
-      if (addrestaurentData?.restaurentPhoto)
-        formdata.append("restaurentPhoto", addrestaurentData.restaurentPhoto);
-
-      if (myRestaurent) {
-        await updateRestaurent(formdata);
-      } else {
-        await createRestaurent(formdata);
-      }
+      await createRestaurent(formdata);
     } catch (error) {
       console.log(error);
     }
+
+    // create res or update res
+    // try {
+    //   let formdata = new FormData();
+
+    //   if (addrestaurentData?.restaurentName)
+    //     formdata.append("restaurentName", addrestaurentData?.restaurentName);
+
+    //   if (addrestaurentData?.city)
+    //     formdata.append("city", addrestaurentData?.city);
+
+    //   if (addrestaurentData?.country)
+    //     formdata.append("country", addrestaurentData?.country);
+
+    //   if (addrestaurentData?.deleveryTime)
+    //     formdata.append(
+    //       "deleveryTime",
+    //       addrestaurentData?.deleveryTime.toString()
+    //     );
+
+    //   if (addrestaurentData?.cuisiens)
+    //     formdata.append("cuisiens", JSON.stringify(addrestaurentData.cuisiens));
+
+    //   if (addrestaurentData?.restaurentPhoto)
+    //     formdata.append("restaurentPhoto", addrestaurentData.restaurentPhoto);
+
+    //   if (myRestaurent) {
+    //     await updateRestaurent(formdata);
+    //   } else {
+    //     await createRestaurent(formdata);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   const change = (e) => {
@@ -111,6 +121,10 @@ const AdminRestaurent = () => {
       ...addrestaurentData,
       cuisiens: e.target.value.split(","),
     });
+  };
+
+  let getRetaurentFeature = async () => {
+    await getRestaurent();
   };
 
   useEffect(() => {
@@ -126,8 +140,8 @@ const AdminRestaurent = () => {
       });
     };
     fetchRestaurent();
-    console.log(myRestaurent);
-    
+    getRetaurentFeature()
+    // console.log(myRestaurent);
   }, []);
 
   return (

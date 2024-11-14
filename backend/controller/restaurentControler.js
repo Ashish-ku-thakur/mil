@@ -193,24 +193,37 @@ export let searchRestaurent = async (req, res) => {
     let searchQuery = req.query.searchQuery || "";
     let selectCuisiens = (req.query.selectCuisiens || "")
       .split(",")
-      .filter((ele) => ele);
+      .filter(Boolean);
+
 
     let query = {};
-    if (selectCuisiens) {
+
+    if (searchText || searchQuery) {
       query.$or = [
-        { restaurentName: { $regex: searchText, $option: "i" } },
-        { ciyt: { $regex: searchText, $option: "i" } },
-        { country: { $regex: searchText, $option: "i" } },
+        {
+          restaurentName: { $regex: searchText || searchQuery, $options: "i" },
+        },
+        { city: { $regex: searchText || searchQuery, $options: "i" } },
+        { country: { $regex: searchText || searchQuery, $options: "i" } },
       ];
     }
+
     if (searchQuery) {
-      query.$or = [
-        { restaurentName: { $regex: searchText, $option: "i" } },
-        { cuisiens: { $regex: searchQuery, $option: "i" } },
-      ];
+      query.$or = query.$or || [];
+      query.$or.push(
+        { restaurentName: { $regex: searchQuery, $options: "i" } },
+        { city: { $regex: searchQuery, $options: "i" } },
+        { country: { $regex: searchQuery, $options: "i" } }
+      );
     }
+
     if (selectCuisiens.length > 0) {
-      query.cuisiens = { $in: selectCuisiens };
+      query.$or = query.$or || [];
+      query.$or.push({
+        cuisiens: {
+          $in: selectCuisiens.map((cuisine) => new RegExp(cuisine, "i")),
+        },
+      }); // case-insensitive regex
     }
 
     let restaurent = await Restaurent.find(query);
@@ -219,7 +232,7 @@ export let searchRestaurent = async (req, res) => {
       restaurent,
     });
   } catch (error) {
-    console.error("Error creating restaurant:", error);
+    console.error("Error searching restaurant:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };

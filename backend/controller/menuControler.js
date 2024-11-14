@@ -78,7 +78,6 @@ export const addMenu = async (req, res) => {
   }
 };
 
-
 export let editMenu = async (req, res) => {
   try {
     let menuId = req.params.id;
@@ -94,16 +93,28 @@ export let editMenu = async (req, res) => {
       });
     }
 
-    let cloudResponse;
+    if (!file) {
+      return res.status(400).json({
+        message: "menuPhoto is not find",
+        success: false,
+      });
+    }
+    
+    let imageuri;
     if (file) {
-      let imageuri = await uploadeImageOnCloudinary(file);
-      cloudResponse = cloudResponse = cloudinary.uploader.upload(imageuri, {
-        folder: "menu_image",
+      imageuri = await uploadeImageOnCloudinary(file);
+    }
+
+    let cloudResponse;
+    if (imageuri) {
+      cloudResponse = await cloudinary.uploader.upload(imageuri, {
+        folder: "menu-image",
         transformation: [{ width: 400, height: 400, crop: "limit" }],
       });
     }
 
-    menu.menuPhoto = cloudResponse.secure_url;
+    menu.menuPhoto = cloudResponse?.secure_url;
+
     if (name) menu.name = name;
     if (description) menu.description = description;
     if (price) menu.price = Number(price);

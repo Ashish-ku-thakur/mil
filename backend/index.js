@@ -6,6 +6,7 @@ import { dbconnection } from "./database/mongoConnection.js";
 import userRouter from "./router/userRouter.js";
 import restaurentRouter from "./router/restaurentRouter.js";
 import menuRouter from "./router/menuRouter.js";
+import oderRouter from './router/orderRouter.js'
 
 dotenv.config();
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors(corsoption));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/restaurent", restaurentRouter);
 app.use("/api/v1/menu", menuRouter);
+app.use("/api/v1/order", oderRouter);
 
 app.listen(PORT, () => {
   dbconnection();

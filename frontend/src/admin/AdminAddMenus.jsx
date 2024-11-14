@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Plus } from "lucide-react";
 import {
   Dialog,
@@ -24,6 +24,7 @@ import {
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import EditMenuDiaglog from "./EditMenuDiaglog";
 import { useMenudata } from "@/store/useMenudata";
+import { useRestaurentdata } from "@/store/useRestaurentdata";
 
 let details = [
   {
@@ -70,6 +71,7 @@ const AdminAddMenus = () => {
   const [image, setImage] = useState(null);
 
   let { createMenu, menus, loading } = useMenudata();
+  let { myRestaurent, getRestaurent } = useRestaurentdata();
 
   const ChangeEventHandler = (e) => {
     const { name, value, type } = e.target;
@@ -114,19 +116,20 @@ const AdminAddMenus = () => {
       return;
     }
     setErrors({});
+
     try {
       let formdata = new FormData();
+      formdata.append("name", addMenuData?.name);
+      formdata.append("description", addMenuData?.description);
+      formdata.append("price", addMenuData?.price);
+      formdata.append("menuPhoto", addMenuData?.menuPhoto);
 
-      formdata.append("description", addMenuData.description);
-      formdata.append("name", addMenuData.name);
-      formdata.append("price", addMenuData.price.toString());
-      if (addMenuData?.menuPhoto)
-        formdata.append("menuPhoto", addMenuData.menuPhoto);
       await createMenu(formdata);
     } catch (error) {
       console.log(error);
     }
-    // console.log(addMenuData);
+
+    
   };
 
   return (
@@ -227,7 +230,7 @@ const AdminAddMenus = () => {
       <div className="md:p-4">
         <div>
           <div className="grid md:grid-cols-3 grid-cols-1 md:my-0 my-2">
-            {details.map((ele) => (
+            {myRestaurent?.menus.map((ele) => (
               <Card key={ele?.id} className="relative ">
                 {/* restaurent menuname & time*/}
                 <CardHeader>
