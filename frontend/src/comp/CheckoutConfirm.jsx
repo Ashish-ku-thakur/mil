@@ -8,9 +8,18 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useCartData } from "@/store/useCartData";
+import { useOrderData } from "@/store/useOrderData";
+import { useRestaurentdata } from "@/store/useRestaurentdata";
+import { useUserdata } from "@/store/useUserdata";
+import { useEffect, useState } from "react";
 
-const CheckoutConfirm = ({ open, setOpen }) => {
+const CheckoutConfirm = ({ open, setOpen, result }) => {
+  let { user } = useUserdata();
+  let { createCheckOutSession, orders, keyId } = useOrderData();
+  let { myRestaurent } = useRestaurentdata();
+  let { cart } = useCartData();
+
   let [checkoutData, setCheckoutData] = useState({
     fullname: "",
     email: "",
@@ -27,10 +36,78 @@ const CheckoutConfirm = ({ open, setOpen }) => {
     setCheckoutData({ ...checkoutData, [name]: value });
   };
 
-  let checkoutformHandler = (e) => {
+  let checkoutformHandler = async (e) => {
     e?.preventDefault();
-    console.log(checkoutData);
+    console.log(orders);
+
+    try {
+      let checkOutOrderData = {
+        cartItem: cart?.map((item) => ({
+          menuId: item?._id,
+          name: item?.name,
+          menuPhoto: item?.menuPhoto,
+          price: item?.price,
+          quntity: item?.quntity,
+        })),
+
+        deleveryDetails: {
+          email: user?.email,
+          name: user?.fullname,
+          address: user?.address,
+          city: user?.city,
+        },
+        restaurentDetails: myRestaurent?._id,
+        amount: result,
+      };
+      await createCheckOutSession(checkOutOrderData);
+
+      const loadRazorpayScript = () =>
+        new Promise((resolve) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = resolve;
+          document.body.appendChild(script);
+        });
+
+      await loadRazorpayScript();
+
+      let options = {
+        key: orders?.key_id,
+        amount: orders?.order?.amount,
+        currency: orders?.order?.currency,
+        order_id: orders?.order?.id,
+        handler: (response) => {
+          console.log(response);
+          
+          alert(response);
+        },
+        prefill: {
+          name: "ashish",
+          email: "ashish@gmail.com",
+          contact: "8287176223",
+        },
+        theme: {
+          color: "010101",
+        },
+      };
+
+      let razorpaycomplete = new Razorpay(options);
+      razorpaycomplete.open();
+    } catch (error) {
+      console.log(error);
+    }
+    // console.log(checkoutData);
   };
+  useEffect(() => {
+    setCheckoutData({
+      fullname: user.fullname,
+      email: user.email,
+      address: user.address,
+      contact: user.contact,
+      city: user.city,
+      country: user.country,
+    });
+  }, [user]);
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>Open</DialogTrigger>
@@ -46,8 +123,9 @@ const CheckoutConfirm = ({ open, setOpen }) => {
                 <Label>{filed}</Label>
                 <Input
                   type="text"
+                  disabled={filed === "email"}
                   name={filed}
-                  value={checkoutData.filed}
+                  value={checkoutData[filed]}
                   placeholder={filed}
                   onChange={ChangeEventHandler}
                   className="focus-visible:ring-0"

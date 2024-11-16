@@ -8,7 +8,6 @@ import { useRestaurentdata } from "@/store/useRestaurentdata";
 
 const Restaurent = () => {
   let params = useParams();
-  console.log(params?.id);
 
   let { selectedRestaurent, getRestaurentById } = useRestaurentdata();
 

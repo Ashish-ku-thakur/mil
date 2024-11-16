@@ -67,7 +67,6 @@ export let useRestaurentdata = create(
             `${API_RESTAURENT_ENDPOINT}/singleRestaurent/${resId}`
           );
           if (response?.data?.success) {
-            console.log(response?.data);
 
             set({ selectedRestaurent: response?.data?.restaurent });
           }

@@ -23,16 +23,18 @@ let orderSchema = new mongoose.Schema(
       },
     ],
     totalAmount: Number,
+    razorpayOrderId: { type: String }, // Razorpay order ID field
     status: {
       type: String,
       enum: [
         "pending",
+        "paid",
         "confirmed",
         "preparing",
         "outfordelivery",
         "delivered",
       ],
-      required:true
+      required: true,
     },
   },
   { timestamps: true }

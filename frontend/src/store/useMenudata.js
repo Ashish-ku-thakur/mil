@@ -49,7 +49,7 @@ export let useMenudata = create(
           );
 
           if (response?.data?.success) {
-            set({ loading: false, menu: response?.data?.menu });
+            set({ loading: false, menus: response?.data?.menu });
             console.log(response?.data);
 
             useRestaurentdata?.getState()?.EditMenuData(response?.data?.menu);

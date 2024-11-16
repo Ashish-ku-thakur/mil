@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-let useCartData = create(
+export let useCartData = create(
   persist(
     (set) => ({
       cart: [],
@@ -16,50 +16,48 @@ let useCartData = create(
             return {
               cart: state?.cart?.map((items) =>
                 items?._id === item?._id
-                  ? [...items, (quntity = quntity + 1)]
+                  ? { ...items, quntity: quntity + 1 }
                   : items
               ),
             };
           } else {
-            // nothing to do
             return {
-              cart: [...state?.cart, (quntity = 1)],
+              cart: [...state?.cart, { ...item, quntity: 1 }],
             };
           }
+          console.log(cart);
         });
       },
       clearCart: () => {
-        set({ cart: [] });
+        set((state) => ({
+          cart: [],
+        }));
       },
 
       removeFromTheCart: (menuId) => {
-        set(() => {
+        set((state) => {
           return { cart: state.cart.filter((items) => items._id !== menuId) };
         });
       },
       incrementQuentity: (menuId) => {
         set((state) => {
           return {
-            cart: [
-              ...state?.cart?.map((items) =>
-                items?._id === menuId
-                  ? { ...items, quntity: items.quntity + 1 }
-                  : items
-              ),
-            ],
+            cart: state?.cart?.map((items) =>
+              items?._id === menuId
+                ? { ...items, quntity: items.quntity + 1 }
+                : items
+            ),
           };
         });
       },
       decrementQuentity: (menuId) => {
         set((state) => {
           return {
-            cart: [
-              ...state?.cart?.map((items) =>
-                items?._id === menuId && items?.quntity > 0
-                  ? { ...items, quntity: items.quntity - 1 }
-                  : items
-              ),
-            ],
+            cart: state?.cart?.map((items) =>
+              items?._id === menuId && items?.quntity > 0
+                ? { ...items, quntity: items.quntity - 1 }
+                : items
+            ),
           };
         });
       },

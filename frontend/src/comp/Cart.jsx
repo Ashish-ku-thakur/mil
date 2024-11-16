@@ -12,6 +12,8 @@ import {
 import { Minus, Plus } from "lucide-react";
 import React, { useState } from "react";
 import CheckoutConfirm from "./CheckoutConfirm";
+import { useCartData } from "@/store/useCartData";
+import _ from "lodash";
 
 const Cart = () => {
   const invoices = [
@@ -30,12 +32,26 @@ const Cart = () => {
       paymentMethod: "Credit Card",
     },
   ];
+  let {
+    cart,
+    clearCart,
+    incrementQuentity,
+    decrementQuentity,
+    removeFromTheCart,
+  } = useCartData();
 
-  let [open, setOpen] = useState(false)
+  let result = _.sum(cart?.map((ele) => ele?.price * ele?.quntity)); // sum of the array's total [23,56,78]
+  let [open, setOpen] = useState(false);
+
   return (
     <div className="flex flex-col max-w-7xl mx-auto my-10">
       <div className="flex justify-end">
-        <Button className="bg-grn hover:bg-hovergrn">Clear All</Button>
+        <Button
+          className="bg-grn hover:bg-hovergrn"
+          onClick={() => clearCart()}
+        >
+          Clear All
+        </Button>
       </div>
 
       <Table>
@@ -51,28 +67,31 @@ const Cart = () => {
         </TableHeader>
 
         <TableBody>
-          {invoices.map((invoice, idx) => (
+          {cart.map((invoice, idx) => (
             <TableRow key={idx} className="hover:bg-gray-400">
               <TableCell>
                 <Avatar>
-                  <AvatarImage />
+                  <AvatarImage src={invoice?.menuPhoto} alt="menu-photo" />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
               </TableCell>
 
-              <TableCell>{invoice.titel}</TableCell>
-              <TableCell>{invoice.totalAmount}</TableCell>
+              <TableCell>{invoice.name}</TableCell>
+              <TableCell>{invoice.price}</TableCell>
 
+              {/* plus & minus */}
               <TableCell>
                 <div className="flex items-center  gap-3">
                   <Button
+                    onClick={() => decrementQuentity(invoice?._id)}
                     size="icon"
                     className="bg-gray-200 text-black rounded-full hover:bg-hovergrn"
                   >
                     <Minus />
                   </Button>
-                  <span>20</span>
+                  <span>{invoice?.quntity}</span>
                   <Button
+                    onClick={() => incrementQuentity(invoice?._id)}
                     size="icon"
                     className="bg-gray-200 text-black rounded-full hover:bg-hovergrn"
                   >
@@ -81,29 +100,39 @@ const Cart = () => {
                 </div>
               </TableCell>
 
-              <TableCell> {invoice.totalAmount} </TableCell>
+              <TableCell> {invoice.quntity * invoice?.price} </TableCell>
 
               <TableCell className="text-right">
                 {" "}
-                <Button className="bg-grn hover:bg-hovergrn">Clear All</Button>
+                <Button
+                  className="bg-grn hover:bg-hovergrn"
+                  onClick={() => removeFromTheCart(invoice?._id)}
+                >
+                  Clear All
+                </Button>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
 
-        <TableFooter className='font-bold text-xl'>
+        <TableFooter className="font-bold text-xl">
           <TableRow>
             <TableCell colSpan={5}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
+            <TableCell className="text-right">${result}</TableCell>
           </TableRow>
         </TableFooter>
       </Table>
 
       <div className="flex justify-end my-3">
-        <Button onClick={() =>setOpen(true)} className="bg-grn hover:bg-hovergrn">Proced to checkout</Button>
+        <Button
+          onClick={() => setOpen(true)}
+          className="bg-grn hover:bg-hovergrn"
+        >
+          Proced to checkout
+        </Button>
       </div>
 
-      <CheckoutConfirm open={open} setOpen={setOpen}/>
+      <CheckoutConfirm open={open} setOpen={setOpen} result={result} />
     </div>
   );
 };

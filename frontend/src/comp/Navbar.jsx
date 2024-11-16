@@ -30,6 +30,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useUserdata } from "@/store/useUserdata";
+import { useCartData } from "@/store/useCartData";
 
 // import bird from '@/'
 
@@ -37,6 +38,7 @@ const Navbar = () => {
   let [admin, setAdmin] = useState(true);
   let { logout, loading, user } = useUserdata();
   let navigate = useNavigate();
+  let { cart } = useCartData();
 
   let move = () => {
     navigate("/signup");
@@ -102,18 +104,20 @@ const Navbar = () => {
 
             <Link to={"/cart"} className="relative">
               <ShoppingCart size={"20"} />
-              <Button
-                size="icons"
-                className="w-4 h-4 absolute -top-3 left-2 bg-red-700 hover:bg-red-800"
-              >
-                9
-              </Button>
+              {cart?.length > 0 && (
+                <Button
+                  size="icons"
+                  className="w-4 h-4 absolute -top-3 left-2 bg-red-700 hover:bg-red-800"
+                >
+                  {cart?.length}
+                </Button>
+              )}
             </Link>
 
             {/* avatar */}
             <div>
               <Avatar>
-                <AvatarImage src={"bird"} alt="" />
+                <AvatarImage src={user?.profilePhoto} alt="" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
             </div>
@@ -151,6 +155,7 @@ export default Navbar;
 let MobileNavbar = () => {
   let { logout, loading, user } = useUserdata();
   let navigate = useNavigate();
+  let { cart } = useCartData();
 
   let move = () => {
     navigate("/signup");
@@ -215,7 +220,7 @@ let MobileNavbar = () => {
             className="flex items-center gap-6 cursor-pointer hover:bg-gray-300 p-2"
           >
             <ShoppingCart />
-            <p>Cart(0)</p>
+            <p>Cart{cart?.length}</p>
           </Link>
 
           {user?.admin && (
@@ -248,31 +253,38 @@ let MobileNavbar = () => {
         </SheetDescription>
 
         <SheetFooter>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center">
+          <div className="flex items-center gap-4 w-full">
+            <div className="flex items-center w-1/2">
               <Avatar>
-                <AvatarImage src={"bird"} alt="" />
+                <AvatarImage src={user?.profilePhoto} alt="" />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <p className="text-sm uppercase font-serif">Ashish kumar </p>
+              <p className="text-sm uppercase font-serif">
+                {user?.fullname} </p>
             </div>
 
-            {loading ? (
-              <Button disabled className="bg-grn hover:bg-hovergrn w-full my-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                Please wait
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  logout(); // Call the logout function
-                  move(); // Call the move function
-                }}
-                className="bg-grn hover:bg-hovergrn w-full my-2"
-              >
-                Logout
-              </Button>
-            )}
+            <div className="w-1/2">
+              {loading ? (
+                <Button
+                  disabled
+                  className="bg-grn hover:bg-hovergrn w-full my-2"
+                >
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Please wait
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => {
+                    logout(); // Call the logout function
+                    move(); // Call the move function
+                  }}
+                  className="bg-grn hover:bg-hovergrn w-full my-2"
+                >
+                  Logout
+                </Button>
+              )}
+            </div>
+
             {/* <Button className="bg-grn hover:bg-hovergrn">Logout</Button> */}
           </div>
         </SheetFooter>

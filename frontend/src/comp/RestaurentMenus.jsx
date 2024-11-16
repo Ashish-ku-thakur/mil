@@ -10,9 +10,11 @@ import {
 import React from "react";
 import burger from "@/assets/burger.jpg";
 import { useNavigate } from "react-router-dom";
+import { useCartData } from "@/store/useCartData";
 
-const RestaurentMenus = ({restaurentData}) => {
+const RestaurentMenus = ({ restaurentData }) => {
   let navigate = useNavigate();
+  let { addToCart } = useCartData();
   return (
     <div className="md:p-4">
       <div>
@@ -34,9 +36,7 @@ const RestaurentMenus = ({restaurentData}) => {
 
               {/* location & que */}
               <CardContent>
-                <CardDescription>
-                 {ele?.description}
-                </CardDescription>
+                <CardDescription>{ele?.description}</CardDescription>
               </CardContent>
 
               <CardContent>
@@ -45,7 +45,10 @@ const RestaurentMenus = ({restaurentData}) => {
               {/* btn */}
               <CardFooter className="flex">
                 <Button
-                  onClick={() => navigate("/cart")}
+                  onClick={() => {
+                    navigate("/cart");
+                    addToCart(ele);
+                  }}
                   className="bg-grn hover:bg-hovergrn w-full"
                 >
                   Add to card
