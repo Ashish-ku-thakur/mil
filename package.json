@@ -4,8 +4,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "supervisor index.js"
+    "dev": "supervisor backend/index.js",
+    "razorpay":"ngrok http 8000/api/v1/order/razorpayWebhook",
+    "build":"npm install && npm install --prefix frontend && npm run build --prefix frontend",
+    "start": "supervisor backend/index.js"
   },
   "keywords": [],
   "author": "",
