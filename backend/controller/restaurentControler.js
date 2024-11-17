@@ -162,8 +162,9 @@ export let getRestaurentOrder = async (req, res) => {
 
 export let updateOrderstatus = async (req, res) => {
   try {
-    let { orderId } = req.params;
+    let orderId = req.params.id;
     let { status } = req.body;
+    console.log(req.params);
 
     let order = await Order.findById(orderId);
 
@@ -180,6 +181,7 @@ export let updateOrderstatus = async (req, res) => {
     return res.status(200).json({
       message: "order status updateed successfully",
       success: true,
+      status: order.status,
     });
   } catch (error) {
     console.error("Error creating restaurant:", error);
@@ -194,7 +196,6 @@ export let searchRestaurent = async (req, res) => {
     let selectCuisiens = (req.query.selectCuisiens || "")
       .split(",")
       .filter(Boolean);
-
 
     let query = {};
 

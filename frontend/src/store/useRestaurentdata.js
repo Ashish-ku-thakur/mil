@@ -8,12 +8,13 @@ axios.defaults.withCredentials = true;
 // restaurentPhoto
 export let useRestaurentdata = create(
   persist(
-    (set) => ({
+    (set, get) => ({
       loading: false,
       myRestaurent: null,
       searchRestaurentResult: null,
       appliedSearchFilter: [],
       selectedRestaurent: null,
+      restaurentOrders: [],
       createRestaurent: async (formdata) => {
         try {
           let response = await axios.post(
@@ -67,11 +68,51 @@ export let useRestaurentdata = create(
             `${API_RESTAURENT_ENDPOINT}/singleRestaurent/${resId}`
           );
           if (response?.data?.success) {
-
             set({ selectedRestaurent: response?.data?.restaurent });
           }
         } catch (error) {
           console.log(error);
+        }
+      },
+
+      getRestaurentOrders: async () => {
+        try {
+          let response = await axios.get(
+            `${API_RESTAURENT_ENDPOINT}/getRestaurentOrder`
+          );
+
+          console.log(response?.data);
+
+          if (response?.data?.success) {
+            set({ restaurentOrders: response?.data?.order });
+          }
+        } catch (error) {
+          console.log(error);
+        }
+      },
+
+      updateRestaurenOrderStatus: async (orderId, status) => {
+        try {
+          console.log(orderId, status);
+
+          let response = await axios.patch(
+            `${API_RESTAURENT_ENDPOINT}/updateOrderstatus/${orderId}`,
+            { status }
+          );
+
+          console.log(response?.data);
+
+          if (response?.data?.success) {
+            const updatedOrders = get().restaurentOrders.map((order) =>
+              order._id === orderId
+                ? { ...order, status: response?.data?.status }
+                : order
+            );
+            set({ restaurentOrders: updatedOrders });
+            toast.success("Order status updated successfully.");
+          }
+        } catch (error) {
+          toast.error("Failed to update order status.");
         }
       },
 
