@@ -25,7 +25,7 @@ export let useCartData = create(
               cart: [...state?.cart, { ...item, quntity: 1 }],
             };
           }
-          console.log(cart);
+          // console.log(cart);
         });
       },
       clearCart: () => {

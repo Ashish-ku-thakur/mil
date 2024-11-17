@@ -12,7 +12,7 @@ dotenv.config();
 export let signup = async (req, res) => {
   try {
     let { fullname, email, password, contact } = req.body;
-    console.log(email);
+    // console.log(email);
 
     let user = await User.findOne({ email });
     if (user) {
@@ -51,7 +51,7 @@ export let signup = async (req, res) => {
       user: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
@@ -95,7 +95,7 @@ export let login = async (req, res) => {
       user: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -132,7 +132,7 @@ export let verifiedEmail = async (req, res) => {
       user: userWithoutPassword,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -144,7 +144,7 @@ export let logout = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -180,7 +180,7 @@ export let forgotPassword = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -218,7 +218,7 @@ export let setNewPassword = async (req, res) => {
       success: true,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -241,7 +241,7 @@ export let checkAuth = async (req, res) => {
       user,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };
@@ -250,7 +250,7 @@ export let updateProfile = async (req, res) => {
   try {
     let userId = req.id;
     let { fullname, city, address, country, profilePhoto } = req.body;
-    console.log("reqdata", req?.body);
+    // console.log("reqdata", req?.body);
 
     let user = await User.findById(userId).select("-password");
 
@@ -275,7 +275,7 @@ export let updateProfile = async (req, res) => {
       user, // Yeh updated user object hai, jo latest data client ko send karega
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };

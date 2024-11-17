@@ -61,7 +61,7 @@ const AdminRestaurent = () => {
     if (!result.success) {
       const fieldErrors = result.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
-      console.log(fieldErrors);
+      // console.log(fieldErrors);
       return;
     }
     setErrors({});
@@ -78,7 +78,7 @@ const AdminRestaurent = () => {
 
       await createRestaurent(formdata);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
 
     // create res or update res

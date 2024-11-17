@@ -112,7 +112,7 @@ const AdminAddMenus = () => {
     if (!result.success) {
       const fieldErrors = result.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
-      console.log(fieldErrors);
+      // console.log(fieldErrors);
       return;
     }
     setErrors({});
@@ -126,7 +126,7 @@ const AdminAddMenus = () => {
 
       await createMenu(formdata);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
 
     

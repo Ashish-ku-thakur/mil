@@ -25,7 +25,7 @@ export let useUserdata = create(
             }
           );
           if (response?.data?.success) {
-            console.log(response?.data);
+            // console.log(response?.data);
             toast.success(response?.data?.message);
             set({
               loading: false,
@@ -36,7 +36,7 @@ export let useUserdata = create(
         } catch (error) {
           set({ loading: false, isAuthenticated: false });
           toast.error(error?.response?.data?.message);
-          console.log(error);
+          // console.log(error);
         }
       },
 
@@ -62,11 +62,11 @@ export let useUserdata = create(
               // isCheckingAuth: true,
             });
             toast.success(response?.data?.message);
-            console.log(response?.data);
+            // console.log(response?.data);
           }
         } catch (error) {
           set({ loading: false, isAuthenticated: false, isCheckingAuth: true });
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }
@@ -92,13 +92,13 @@ export let useUserdata = create(
               user: response?.data?.user,
               isAuthenticated: true,
             });
-            console.log(response?.data);
+            // console.log(response?.data);
             toast?.success(response?.data?.success);
           }
         } catch (error) {
           set({ loading: false, isAuthenticated: false });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }
@@ -113,12 +113,12 @@ export let useUserdata = create(
           if (response?.data?.success) {
             set({ loading: false, user: null, isAuthenticated: false });
             toast?.success(response?.data?.message);
-            console.log(response?.data);
+            // console.log(response?.data);
           }
         } catch (error) {
           set({ loading: false, isCheckingAuth: true, user: null });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }
@@ -143,7 +143,7 @@ export let useUserdata = create(
             isCheckingAuth: false,
           });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         }
       },
 
@@ -170,7 +170,7 @@ export let useUserdata = create(
             loading: false,
           });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }
@@ -199,7 +199,7 @@ export let useUserdata = create(
             loading: false,
           });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }
@@ -220,7 +220,7 @@ export let useUserdata = create(
           );
 
           if (response?.data?.success) {
-            console.log(response?.data);
+            // console.log(response?.data);
 
             set({
               loading: false,
@@ -234,7 +234,7 @@ export let useUserdata = create(
             loading: false,
           });
           toast?.error(error?.response?.data?.success);
-          console.log(error);
+          // console.log(error);
         } finally {
           set({ loading: false });
         }

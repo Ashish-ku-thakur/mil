@@ -61,7 +61,7 @@ const Profile = () => {
 
   let profileSubmitHandler = async (e) => {
     e?.preventDefault();
-    console.log(profileData?.profilePhoto);
+    // console.log(profileData?.profilePhoto);
 
     try {
       let formdata = new FormData();
@@ -78,7 +78,7 @@ const Profile = () => {
 
       await updateProfile(formdata);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     // api implementation
   };

@@ -21,7 +21,7 @@ export let useOrderData = create(
               },
             }
           );
-          console.log(data);
+          // console.log(data);
 
         
           if (data?.success) {
@@ -29,7 +29,7 @@ export let useOrderData = create(
             // window.location.href = data?.order?.success_url;
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
           // window.location.href = data?.order?.cencel_url;
         }
       },
@@ -37,12 +37,12 @@ export let useOrderData = create(
       getOrderData: async () => {
         try {
           let response = await axios.get(`${API_ORDER_ENDPOINT}/getOrders`);
-          console.log(response?.data);
+          // console.log(response?.data);
           if (response?.data?.success) {
             set({ totalOrders: response?.data?.orders });
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       },
     }),

@@ -126,7 +126,7 @@ export let editMenu = async (req, res) => {
       menu,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({ message: "internal server error" });
   }
 };

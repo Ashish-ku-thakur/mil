@@ -24,7 +24,7 @@ export let useMenudata = create(
               },
             }
           );
-          console.log(response?.data);
+          // console.log(response?.data);
 
           if (response?.data?.success) {
             set({ loading: false, menus: response?.data?.menu });
@@ -36,7 +36,7 @@ export let useMenudata = create(
           }
         } catch (error) {
           set({ loading: false });
-          console.log(error);
+          // console.log(error);
         }
       },
 
@@ -50,14 +50,14 @@ export let useMenudata = create(
 
           if (response?.data?.success) {
             set({ loading: false, menus: response?.data?.menu });
-            console.log(response?.data);
+            // console.log(response?.data);
 
             useRestaurentdata?.getState()?.EditMenuData(response?.data?.menu);
             toast?.success(response?.data?.message);
           }
         } catch (error) {
           set({ loading: false });
-          console.log(error);
+          // console.log(error);
         }
       },
     }),

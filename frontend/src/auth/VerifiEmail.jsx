@@ -17,7 +17,7 @@ const VerifiEmail = () => {
   let navigate = useNavigate();
   let submitHandler = async (e) => {
     e.preventDefault();
-    console.log(value);
+    // console.log(value);
 
     // after api imp
     await verifyEmail(value);

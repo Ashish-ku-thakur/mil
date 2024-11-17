@@ -24,7 +24,7 @@ export let useRestaurentdata = create(
 
           if (response?.data?.success) {
             set({ loading: false, myRestaurent: response?.data?.restaurent });
-            console.log(response?.data);
+            // console.log(response?.data);
             toast.success(response?.data?.message);
           }
         } catch (error) {
@@ -32,7 +32,7 @@ export let useRestaurentdata = create(
           if (error?.response?.status === 400) {
             set({ myRestaurent: null });
           }
-          console.log(error);
+          // console.log(error);
           toast?.error(error?.response?.data?.message);
         }
       },
@@ -58,7 +58,7 @@ export let useRestaurentdata = create(
             set({ selectedRestaurent: null });
           }
           toast?.error(error?.response?.data?.message);
-          console.log(error);
+          // console.log(error);
         }
       },
 
@@ -71,7 +71,7 @@ export let useRestaurentdata = create(
             set({ selectedRestaurent: response?.data?.restaurent });
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       },
 
@@ -81,26 +81,26 @@ export let useRestaurentdata = create(
             `${API_RESTAURENT_ENDPOINT}/getRestaurentOrder`
           );
 
-          console.log(response?.data);
+          // console.log(response?.data);
 
           if (response?.data?.success) {
             set({ restaurentOrders: response?.data?.order });
           }
         } catch (error) {
-          console.log(error);
+          // console.log(error);
         }
       },
 
       updateRestaurenOrderStatus: async (orderId, status) => {
         try {
-          console.log(orderId, status);
+          // console.log(orderId, status);
 
           let response = await axios.patch(
             `${API_RESTAURENT_ENDPOINT}/updateOrderstatus/${orderId}`,
             { status }
           );
 
-          console.log(response?.data);
+          // console.log(response?.data);
 
           if (response?.data?.success) {
             const updatedOrders = get().restaurentOrders.map((order) =>
@@ -127,7 +127,7 @@ export let useRestaurentdata = create(
 
           if (response?.data?.success) {
             set({ loading: false, myRestaurent: response?.data?.restaurent });
-            console.log(response?.data);
+            // console.log(response?.data);
             toast.success(response?.data?.message);
           }
         } catch (error) {

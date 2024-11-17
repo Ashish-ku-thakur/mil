@@ -38,7 +38,7 @@ const CheckoutConfirm = ({ open, setOpen, result }) => {
 
   let checkoutformHandler = async (e) => {
     e?.preventDefault();
-    console.log(orders);
+    // console.log(orders);
 
     try {
       let checkOutOrderData = {
@@ -77,7 +77,7 @@ const CheckoutConfirm = ({ open, setOpen, result }) => {
         currency: orders?.order?.currency,
         order_id: orders?.order?.id,
         handler: (response) => {
-          console.log(response);
+          // console.log(response);
           
           alert(response);
         },
@@ -94,7 +94,7 @@ const CheckoutConfirm = ({ open, setOpen, result }) => {
       let razorpaycomplete = new Razorpay(options);
       razorpaycomplete.open();
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     // console.log(checkoutData);
   };

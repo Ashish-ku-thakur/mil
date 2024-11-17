@@ -29,7 +29,7 @@ const Signup = () => {
     if (!result.success) {
       let fieldError = result.error.formErrors.fieldErrors;
       setErrors(fieldError);
-      console.log(fieldError);
+      // console.log(fieldError);
       return;
     } else {
       setErrors("");

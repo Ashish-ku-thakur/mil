@@ -13,7 +13,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
-  console.log(selectedMenu);
+  // console.log(selectedMenu);
 
   const [editMenuData, setEditMenuData] = useState({
     name: "",
@@ -73,7 +73,7 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
 
       await editMenu(formdata, selectedMenu?._id);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
     }
     // api start here
     // console.log(editMenuData);

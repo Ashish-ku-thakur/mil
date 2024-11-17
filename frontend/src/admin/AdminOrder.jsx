@@ -23,7 +23,7 @@ const AdminOrder = () => {
     useRestaurentdata();
 
   const handleStatus = async (orderId, status) => {
-    console.log(orderId,status);
+    // console.log(orderId,status);
     
     await updateRestaurenOrderStatus(orderId, status);
   };

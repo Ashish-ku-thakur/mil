@@ -22,7 +22,7 @@ export const sendEmailVerificationCode = async (email, verificationToken) => {
     });
     return res; // Optional: returning the response if you want to handle it
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Failed to send email verification");
   }
 };
@@ -40,7 +40,7 @@ export let sendWelcomeEmail = async (user) => {
       category: "For Welcome to Mil.com",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Failed to send Welcome to Mil");
   }
 };
@@ -58,7 +58,7 @@ export let sendPasswordResetLink = async (email, resetURl) => {
       category: "For Reset Password Link",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Failed to send Reset Password Link");
   }
 };
@@ -76,7 +76,7 @@ export let sendResetSuccessEmail = async (email) => {
       category: "For New Password Create",
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     throw new Error("Failed to send New Password Create Successfully");
   }
 };

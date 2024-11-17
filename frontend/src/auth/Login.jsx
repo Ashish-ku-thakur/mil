@@ -28,13 +28,13 @@ let Login = () => {
     if (!result.success) {
       let fieldError = result.error.formErrors.fieldErrors;
       setErrors(fieldError);
-      console.log(fieldError);
+      // console.log(fieldError);
       return;
     } else {
       setErrors("");
       await login(loginFields);
       navigate("/");
-      console.log("hu");
+      // console.log("hu");
       
     }
     // api start here

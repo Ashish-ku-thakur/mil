@@ -40,7 +40,7 @@ export let createCheckOutSession = async (req, res) => {
         message: "Error creating Razorpay order.",
       });
     }
-    console.log("Local Razorpay order ID:", razorpayOrder.id);
+    // console.log("Local Razorpay order ID:", razorpayOrder.id);
 
     // Create a new order in your database
     const orderCreate = await Order.create({
@@ -86,10 +86,10 @@ export let razorpayWebhook = async (req, res) => {
       return res.status(400).json({ error: "Invalid signature." });
     }
 
-    console.log("Signature verified successfully");
+    // console.log("Signature verified successfully");
 
     const razorpayOrderId = req.body.payload.payment.entity.order_id;
-    console.log("Payment order ID:", razorpayOrderId);
+    // console.log("Payment order ID:", razorpayOrderId);
 
     // Fetch the order from local database
     const order = await Order.findOne({ razorpayOrderId });
@@ -104,7 +104,7 @@ export let razorpayWebhook = async (req, res) => {
     order.status = "paid";
     await order.save();
 
-    console.log("Order updated successfully.");
+    // console.log("Order updated successfully.");
     res.status(200).json({ message: "Webhook processed successfully." });
   } catch (error) {
     console.error("Error in Razorpay webhook:", error);
@@ -123,7 +123,7 @@ export let getOrders = async (req, res) => {
       orders,
     });
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return res.status(500).json({
       message: "Internal Server Error",
     });
