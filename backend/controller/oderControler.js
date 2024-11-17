@@ -3,14 +3,12 @@ import Restaurent from "../models/restaurentModel.js";
 import razorpay from "../razorpay/razorpayConfig.js";
 import crypto from "crypto";
 import dotenv from "dotenv";
+
 dotenv.config();
 
-// Create Checkout Session
 export let createCheckOutSession = async (req, res) => {
   try {
     const { checkOutSessionRequest } = req.body; // Contains cartItems, deliveryData, and restaurantId
-
-    // console.log(checkOutSessionRequest);
 
     // Find restaurant details
     const restaurent = await Restaurent.findById(
@@ -25,7 +23,7 @@ export let createCheckOutSession = async (req, res) => {
 
     // Razorpay order options
     const options = {
-      amount: checkOutSessionRequest.amount * 100, // Amount in paise (Razorpay requires this format)
+      amount: checkOutSessionRequest.amount * 100, // Amount in paise
       currency: "INR",
       receipt: `receipt_${Date.now()}`, // Unique receipt ID
       notes: {
@@ -42,24 +40,26 @@ export let createCheckOutSession = async (req, res) => {
         message: "Error creating Razorpay order.",
       });
     }
+    console.log("Local Razorpay order ID:", razorpayOrder.id);
 
-    // Create a new order in your database with Razorpay order ID
+    // Create a new order in your database
     const orderCreate = await Order.create({
       userDetails: req.id,
       restaurentDetails: restaurent._id,
       deleveryDetails: checkOutSessionRequest.deleveryDetails,
       cartItem: checkOutSessionRequest.cartItem,
       totalAmount: checkOutSessionRequest.amount,
-      razorpayOrderId: razorpayOrder.id, // Save Razorpay order ID here
+      razorpayOrderId: razorpayOrder.id,
       status: "pending",
     });
 
+    let key_id = process.env.REZORPAY_KEY_ID;
     // Respond with Razorpay order details
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       razorpayOrderId: razorpayOrder.id,
-      key_id: process.env.RAZORPAY_KEY_ID,
       order: razorpayOrder,
+      key_id,
     });
   } catch (error) {
     console.error("Error creating checkout session:", error);
@@ -70,62 +70,44 @@ export let createCheckOutSession = async (req, res) => {
   }
 };
 
-// Razorpay Webhook
 export let razorpayWebhook = async (req, res) => {
   try {
     const webhookSecret = process.env.RAZORPAY_SECRET_KEY;
-    if (!webhookSecret) {
-      return res.status(500).json({ error: "Webhook secret not configured." });
-    }
-
-    // Verify Razorpay signature
     const razorpaySignature = req.headers["x-razorpay-signature"];
-    const body = req.rawBody; // Raw body is required for HMAC signature verification
+    const rawBody = req.rawBody;
 
     const expectedSignature = crypto
       .createHmac("sha256", webhookSecret)
-      .update(body)
+      .update(rawBody)
       .digest("hex");
 
     if (expectedSignature !== razorpaySignature) {
-      console.log({
-        expectedSignature: expectedSignature,
-        razorpaySignature: razorpaySignature,
-      });
-
-      return res.status(400).json({ error: "Invalid Razorpay signature." });
+      console.error("Invalid Razorpay signature.");
+      return res.status(400).json({ error: "Invalid signature." });
     }
 
     console.log("Signature verified successfully");
 
-    // Handle Razorpay events
-    const event = req.body.event;
-    const payload = req.body.payload;
+    const razorpayOrderId = req.body.payload.payment.entity.order_id;
+    console.log("Payment order ID:", razorpayOrderId);
 
-    if (event === "payment.captured") {
-      const payment = payload.payment.entity;
-
-      // Update order status to "confirmed" in your database
-      const order = await Order.findOne({ razorpayOrderId: payment.order_id });
-      console.log({ razorpayOrderId: payment.order_id }, order);
-
-      if (!order) {
-        return res.status(404).json({ message: "Order not found." });
-      }
-
-      order.status = "paid";
-      order.razorpayOrderId = payment.id;
-      order.totalAmount = payment.amount;
-      await order.save();
-
-      console.log("Order updated successfully.");
-    } else {
-      console.warn(`Unhandled event type: ${event}`);
+    // Fetch the order from local database
+    const order = await Order.findOne({ razorpayOrderId });
+    if (!order) {
+      console.error(
+        `Order not found for Razorpay order ID: ${razorpayOrderId}`
+      );
+      return res.status(404).json({ message: "Order not found." });
     }
 
-    res.status(200).json({ status: "Webhook processed successfully." });
+    // Update the order status
+    order.status = "paid";
+    await order.save();
+
+    console.log("Order updated successfully.");
+    res.status(200).json({ message: "Webhook processed successfully." });
   } catch (error) {
-    console.error("Error processing webhook:", error);
+    console.error("Error in Razorpay webhook:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };

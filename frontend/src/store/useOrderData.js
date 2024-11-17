@@ -9,6 +9,7 @@ export let useOrderData = create(
   persist(
     (set) => ({
       orders: [],
+      totalOrders:[],
       createCheckOutSession: async (checkOutSessionRequest) => {
         try {
           let {data} = await axios.post(
@@ -33,12 +34,12 @@ export let useOrderData = create(
         }
       },
 
-      getOrderDetail: async () => {
+      getOrderData: async () => {
         try {
           let response = await axios.get(`${API_ORDER_ENDPOINT}/getOrders`);
+          console.log(response?.data);
           if (response?.data?.success) {
-            console.log(response?.data);
-            set({ orders: response?.data?.orders });
+            set({ totalOrders: response?.data?.orders });
           }
         } catch (error) {
           console.log(error);

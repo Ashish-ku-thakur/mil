@@ -25,6 +25,12 @@ app.use(
   })
 );
 
+// app.post(
+//   "/api/v1/order/razorpayWebhook",
+//   bodyParser.raw({ type: "application/json" }),
+//   razorpayWebhook
+// );
+
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 app.use(cookieParser());
 app.use(cors(corsoption));
