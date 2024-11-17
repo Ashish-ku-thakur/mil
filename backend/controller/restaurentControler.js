@@ -164,7 +164,6 @@ export let updateOrderstatus = async (req, res) => {
   try {
     let orderId = req.params.id;
     let { status } = req.body;
-    console.log(req.params);
 
     let order = await Order.findById(orderId);
 

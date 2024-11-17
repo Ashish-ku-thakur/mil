@@ -1,5 +1,6 @@
 import {
   createBrowserRouter,
+  Navigate,
   RouterProvider,
 } from "react-router-dom";
 import "./App.css";
@@ -22,10 +23,53 @@ import { useUserdata } from "./store/useUserdata";
 import { useEffect } from "react";
 import Load from "./comp/Load";
 
+// donn't get to go any routes expects to login
+let ProtectedRoute = ({ children }) => {
+  let { isAuthenticated, user } = useUserdata();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
+  if (!user?.isVerified) {
+    return <Navigate to="/verify-email" />;
+  }
+
+  return children;
+};
+
+// is already have an account and cookis then donn't go to login take him to main page
+let AuthenticatedUser = ({ children }) => {
+  let { isAuthenticated, user } = useUserdata();
+
+  if (isAuthenticated && user?.isVerified) {
+    return <Navigate to="/" replace />;
+  }
+
+  return children;
+};
+
+let AdminUser = ({ children }) => {
+  let { isAuthenticated, user } = useUserdata();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!user?.admin) {
+    return <Navigate to="/" replace />;
+  }
+  return children;
+};
+
 let appRouter = createBrowserRouter([
   {
     path: "/",
-    element: <MainPage />,
+    element: (
+      <ProtectedRoute>
+        <MainPage />
+      </ProtectedRoute>
+    ),
     children: [
       {
         path: "/",
@@ -54,30 +98,56 @@ let appRouter = createBrowserRouter([
       // admin services started from here
       {
         path: "/admin/restaurent",
-        element: <AdminRestaurent />,
+        element: (
+          <AdminUser>
+            <AdminRestaurent />
+          </AdminUser>
+        ),
       },
       {
         path: "/admin/addmenus",
-        element: <AdminAddMenus />,
+        element: (
+          <AdminUser>
+            <AdminAddMenus />
+          </AdminUser>
+        ),
       },
       {
         path: "/admin/orders",
-        element: <AdminOrder />,
+        element: (
+          <AdminUser>
+            <AdminOrder />
+          </AdminUser>
+        ),
       },
     ],
   },
 
   {
     path: "/signup",
-    element: <Signup />,
+    element: (
+      <AuthenticatedUser>
+        {" "}
+        <Signup />
+      </AuthenticatedUser>
+    ),
   },
   {
     path: "/verifi-email",
-    element: <VerifiEmail />,
+    element: (
+      <AuthenticatedUser>
+        {" "}
+        <VerifiEmail />
+      </AuthenticatedUser>
+    ),
   },
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <AuthenticatedUser>
+        <Login />
+      </AuthenticatedUser>
+    ),
   },
   {
     path: "/forgot-password",
@@ -88,6 +158,7 @@ let appRouter = createBrowserRouter([
     element: <ResetPassword />,
   },
 ]);
+
 function App() {
   let { checkAuth, isCheckingAuth, user } = useUserdata();
 
