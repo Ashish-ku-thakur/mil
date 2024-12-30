@@ -103,7 +103,7 @@ export let useRestaurentdata = create(
           // console.log(response?.data);
 
           if (response?.data?.success) {
-            const updatedOrders = get().restaurentOrders.map((order) =>
+            const updatedOrders = get().restaurentOrders?.map((order) =>
               order._id === orderId
                 ? { ...order, status: response?.data?.status }
                 : order
