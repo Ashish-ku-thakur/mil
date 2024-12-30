@@ -15,7 +15,7 @@ let userSchema = new mongoose.Schema(
     lastLogin: { type: Date, default: Date.now },
     isVerified: { type: Boolean, default: false }, // email is verified
     resetPasswordToken: { type: String, default: null }, // reset password link
-    resetPasswordTokenExpiresAt: { type: Date, default: null }, 
+    resetPasswordTokenExpiresAt: { type: Date, default: null },
     verificationToken: { type: String, default: null }, //  6  digital code
     verificationTokenExpiresAt: { type: Date, default: null },
   },
