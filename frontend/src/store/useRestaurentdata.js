@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-let API_RESTAURENT_ENDPOINT = "http://localhost:8000/api/v1/restaurent";
+let API_RESTAURENT_ENDPOINT = "https://mil-ros2.onrender.com/api/v1/restaurent";
 axios.defaults.withCredentials = true;
 // restaurentPhoto
 export let useRestaurentdata = create(

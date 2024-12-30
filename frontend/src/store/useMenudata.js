@@ -4,7 +4,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { useRestaurentdata } from "./useRestaurentdata";
 
-let API_MENU_ENDPOINT = "http://localhost:8000/api/v1/menu";
+let API_MENU_ENDPOINT = "https://mil-ros2.onrender.com/api/v1/menu";
 axios.defaults.withCredentials = true;
 
 export let useMenudata = create(

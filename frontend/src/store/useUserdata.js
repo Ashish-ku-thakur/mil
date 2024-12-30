@@ -3,7 +3,7 @@ import { toast } from "sonner";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-let API_USER_ENDPOINT = "http://localhost:8000/api/v1/user";
+let API_USER_ENDPOINT = "https://mil-ros2.onrender.com/api/v1/user";
 export let useUserdata = create(
   persist(
     (set) => ({

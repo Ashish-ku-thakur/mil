@@ -14,7 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 8000; // Use your environment variable or default to 8000
 
 let corsoption = {
-  origin: process.env.FRONTEND_URI,
+  origin: "https://mil-ros2.onrender.com",
   credentials: true,
 };
 
