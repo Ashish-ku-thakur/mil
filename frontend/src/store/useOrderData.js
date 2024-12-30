@@ -2,7 +2,7 @@ import axios from "axios";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-let API_ORDER_ENDPOINT = "http://localhost:8000/api/v1/order";
+let API_ORDER_ENDPOINT = "https://mil-ros2.onrender.com/api/v1/order";
 axios.defaults.withCredentials = true;
 
 export let useOrderData = create(
