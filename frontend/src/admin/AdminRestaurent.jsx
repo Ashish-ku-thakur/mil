@@ -153,7 +153,7 @@ const AdminRestaurent = () => {
 
         <form onSubmit={checkoutformHandler}>
           <div className="md:grid grid-cols-2 space-y-2 gap-2 md:space-y-0">
-            {mapData.map((field) => (
+            {mapData?.map((field) => (
               <div key={field}>
                 {errors[field] && (
                   <span className="text-red-600 w-full flex justify-center">

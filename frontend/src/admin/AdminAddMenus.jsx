@@ -155,7 +155,7 @@ const AdminAddMenus = () => {
 
             <form onSubmit={checkoutformHandler}>
               <div className="md:grid grid-cols-2 space-y-2 gap-2 md:space-y-0">
-                {mapData.map((field) => (
+                {mapData?.map((field) => (
                   <div key={field}>
                     {errors[field] && (
                       <span className="text-red-600 w-full flex justify-center">
@@ -230,7 +230,7 @@ const AdminAddMenus = () => {
       <div className="md:p-4">
         <div>
           <div className="grid md:grid-cols-3 grid-cols-1 md:my-0 my-2">
-            {myRestaurent?.menus.map((ele) => (
+            {myRestaurent?.menus?.map((ele) => (
               <Card key={ele?.id} className="relative ">
                 {/* restaurent menuname & time*/}
                 <CardHeader>

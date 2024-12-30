@@ -28,7 +28,7 @@ const Order = () => {
         </h2>
 
         <div className="mb-6">
-          {totalOrders.map((order, index) => (
+          {totalOrders?.map((order, index) => (
             <div key={index} className="mb-2">
               <h2 className="mb-6">
                 Order Summary:span{" "}

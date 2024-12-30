@@ -158,7 +158,7 @@ export default SearchPage;
 let Skeleton = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-      {["Biryani", "Samose", "Momos"].map((ele) => (
+      {["Biryani", "Samose", "Momos"]?.map((ele) => (
         <Card key={ele} className="relative">
           {/* Skeleton for Restaurant Name & Time */}
           <CardHeader>
@@ -192,7 +192,7 @@ let Skeleton = () => {
               <div className="h-4 w-1/4 bg-gray-300 rounded mt-2 animate-pulse"></div>{" "}
               {/* Country Skeleton */}
               <div className="flex gap-2 mt-4">
-                {["Biryani", "Samose", "Momos"].map((que) => (
+                {["Biryani", "Samose", "Momos"]?.map((que) => (
                   <div
                     key={que}
                     className="h-6 w-12 bg-gray-300 rounded-xl animate-pulse"

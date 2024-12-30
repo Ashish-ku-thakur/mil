@@ -118,7 +118,7 @@ const CheckoutConfirm = ({ open, setOpen, result }) => {
 
         <form onSubmit={checkoutformHandler}>
           <div className="md:grid grid-cols-2 space-y-2 gap-2 md:space-y-0">
-            {mapData.map((filed) => (
+            {mapData?.map((filed) => (
               <div key={filed}>
                 <Label>{filed}</Label>
                 <Input

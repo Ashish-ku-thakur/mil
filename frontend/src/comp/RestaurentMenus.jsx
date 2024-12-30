@@ -21,7 +21,7 @@ const RestaurentMenus = ({ restaurentData }) => {
         <h2 className="text-xl md:text-2xl font-bold my-6">Available Menus</h2>
 
         <div className="grid md:grid-cols-3 grid-cols-1 md:my-0 my-2">
-          {restaurentData.map((ele) => (
+          {restaurentData?.map((ele) => (
             <Card key={ele?._id} className="relative ">
               {/* restaurent name & time*/}
               <CardHeader>
@@ -71,7 +71,7 @@ let SkeletonRestaurentMenus = () => {
         <h2 className="h-6 w-40 bg-gray-300 rounded animate-pulse my-6"></h2>{" "}
         {/* Skeleton for title */}
         <div className="grid md:grid-cols-3 grid-cols-1 gap-4">
-          {["Biryani", "Samose", "Momos"].map((ele) => (
+          {["Biryani", "Samose", "Momos"]?.map((ele) => (
             <Card key={ele} className="relative">
               {/* Skeleton for image */}
               <CardHeader>

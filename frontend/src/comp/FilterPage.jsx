@@ -23,7 +23,7 @@ const FilterPage = () => {
         </Button>
       </div>
 
-      {filterOption.map((filter) => (
+      {filterOption?.map((filter) => (
         <div key={filter?.id} className="flex items-center my-4 gap-2">
           <Checkbox
             id={filter?.id}

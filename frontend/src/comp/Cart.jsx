@@ -67,7 +67,7 @@ const Cart = () => {
         </TableHeader>
 
         <TableBody>
-          {cart.map((invoice, idx) => (
+          {cart?.map((invoice, idx) => (
             <TableRow key={idx} className="hover:bg-gray-400">
               <TableCell>
                 <Avatar>

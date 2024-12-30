@@ -100,7 +100,7 @@ const EditMenuDiaglog = ({ selectedMenu, open2, setOpen2 }) => {
         {/* edit menu data */}
         <form onSubmit={checkoutformHandler}>
           <div className="md:grid grid-cols-2 space-y-2 gap-2 md:space-y-0">
-            {mapData.map((field) => (
+            {mapData?.map((field) => (
               <div key={field}>
                 <Label>{field}</Label>
                 <Input
