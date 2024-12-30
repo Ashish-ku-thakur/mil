@@ -34,7 +34,7 @@ const Restaurent = () => {
           <div className="my-5">
             <h1 className="font-semibold text-2xl">Birany</h1>
             <div className="flex gap-2 my-2">
-              {selectedRestaurent?.cuisiens.map((ele) => (
+              {selectedRestaurent?.cuisiens?.map((ele) => (
                 <Badge key={ele}>{ele}</Badge>
               ))}
             </div>
