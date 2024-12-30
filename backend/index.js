@@ -45,7 +45,8 @@ app.use("/api/v1/order", oderRouter);
 
 app.use(express.static(path.join(dirname, "/frontend/dist")));
 // we have to set our root folder (dist means sorce of frontend folder)
-// C:\Users\DELL\Desktop\main\clone rest\backend\frontend\dist (this is not right approch)  ->  C:\Users\DELL\Desktop\main\clone rest\frontend\dist (../)
+// C:\Users\DELL\Desktop\main\clone rest\backend\frontend\dist (this is not right approch) 
+//  ->  C:\Users\DELL\Desktop\main\clone rest\frontend\dist (../)
 
 app.use("*", (req, res) => {
   // res.sendFile(path.join(dirname, "../frontend/dist/index.html"));//kaam same hi karega
